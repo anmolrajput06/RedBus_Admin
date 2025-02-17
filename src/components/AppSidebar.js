@@ -36,7 +36,7 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarHeader className="border-bottom" style={{ textAlign: "center" }}>
-      <h5 style={{ textAlign: "center" }}>Admin</h5>
+      <h5 style={{ textAlign: "center" }}> Admin </h5>
       </CSidebarHeader>
       <AppSidebarNav items={navigation} />
       <CSidebarFooter className="border-top d-none d-lg-flex">
