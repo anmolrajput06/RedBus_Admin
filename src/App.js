@@ -79,7 +79,6 @@ console.log(location.pathname,"0");
         <Route path='/reset' name="Forgate Password Page" element={<ForgatePassword />} />
         <Route path="/" name="Page 404" element={<Login />} />
         <Route path="/500" name="Page 500" element={<Page500 />} />
-        {/* <Route path="*" name="Home" element={<DefaultLayout />} /> */}
         <Route
           path="/admin/*"
           element={storedRole === "ADMIN" ? <DefaultLayout /> : <Login />}

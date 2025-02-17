@@ -28,17 +28,22 @@ const WidgetsDropdown = (props) => {
   }
 
   return (
-    <CRow className={props.className} xs={{ gutter: 4 }}>
-      <CCol sm={3} xl={3} xxl={2}>
+    <CRow
+      className={props.className}
+      xs={{ gutter: 4 }}
+      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+    >
+      <CCol sm={3} xl={3} xxl={2} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <CWidgetStatsA
           color="primary"
           value={totalCustomers}
           title="Total Customers"
           onClick={handleRedirect} // Box Clickable
-          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}
+          style={{ cursor: 'pointer', textAlign: 'center' }}
         />
       </CCol>
     </CRow>
+
   )
 }
 

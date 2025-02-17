@@ -114,7 +114,10 @@ const Tables = () => {
     columns,
     data,
   });
-
+  const handleDateChange = (update) => {
+    setDateRange(update);
+    setCurrentPage(1); // Reset page to 1 when the date range changes
+  };
   return (
     <div className="container">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -142,26 +145,35 @@ const Tables = () => {
             />
           )}
         </div>
-        <DatePicker
-          selectsRange={true}
-          startDate={fromDate}
-          endDate={toDate}
-          onChange={(update) => setDateRange(update)}
-          className="form-control"
-          isClearable={true}
-          dateFormat="yyyy-MM-dd"
-          placeholderText="Select date range"
-          onKeyDown={(e) => e.preventDefault()} 
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <DatePicker
+            selectsRange={true}
+            startDate={fromDate}
+            endDate={toDate}
+            onChange={handleDateChange}
+            className="form-control"
+            isClearable={true}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select date range"
+            onKeyDown={(e) => e.preventDefault()}
+            style={{ flex: 1 }} // To allow DatePicker to take the available space
+          />
 
-        <div>
-          <select className="form-select d-inline w-auto" value={itemsPerPage} onChange={handleItemsPerPageChange}>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select>
+          <div>
+            <select
+              className="form-select d-inline w-auto"
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
+              style={{ width: 'auto', display: 'inline-block' }}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+          </div>
         </div>
+
       </div>
 
       {loading ? (
