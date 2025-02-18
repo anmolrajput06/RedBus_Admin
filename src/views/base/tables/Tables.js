@@ -35,8 +35,8 @@ const Tables = () => {
   const fetchData = debounce(async () => {
     setLoading(true);
     try {
-      // const response = await axios.post(`${port}customer_list`, {
-        const response = await axios.post(`https://newpenal.pandpinfotech.com/backend/getall/clients`, {
+      const response = await axios.post(`${port}customer_list`, {
+        // const response = await axios.post(`https://newpenal.pandpinfotech.com/backend/getall/clients`, {
 
         limit: itemsPerPage,
         page: currentPage,
