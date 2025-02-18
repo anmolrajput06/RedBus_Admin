@@ -24,15 +24,14 @@ const ChecksRadios = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [modalVisibleadd, setModalVisibleadd] = useState(false);
+
   const [modalVisible, setModalVisible] = useState(false);
-  const [customerId, setCustomerId] = useState(null);
+
   const [dateRange, setDateRange] = useState([null, null]);
   const [fromDate, toDate] = dateRange;
 
-  const handleViewDetails = (id) => {
-    setCustomerId(id);
-    setModalVisible(true);
-  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -69,6 +68,48 @@ const ChecksRadios = () => {
       }
     } catch (error) {
       console.error("Error updating mission data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleAddMissionSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await axios.post('http://localhost:7000/add_mission', {
+        heading: missionData.heading,
+        isSpinCount: true,
+        spinCount: missionData.spinCount,
+        isBetAmount: true,
+        betAmount: missionData.betAmount,
+        isTimesSymbol: true,
+        symbol: 4,  // Set the symbol and timesSymbol if required
+        timesSymbol: 4,
+        prizeAmount: missionData.prizeAmount,
+      });
+
+      if (response.data.status === 200) {
+        Swal.fire({
+          title: 'Mission Added!',
+          text: response.data.msg,
+          icon: 'success',
+          confirmButtonText: 'OK',
+          timer: 2000,
+        }).then(() => {
+          setModalVisibleadd(false);
+          fetchData();  // Refresh the mission list
+        });
+      } else {
+        Swal.fire({
+          title: 'Error!',
+          text: response.data.msg,
+          icon: 'error',
+          confirmButtonText: 'Try Again',
+        });
+      }
+    } catch (error) {
+      console.error("Error adding mission:", error);
     } finally {
       setLoading(false);
     }
@@ -291,8 +332,8 @@ const ChecksRadios = () => {
           <div>
             <select
               className="form-select d-inline w-auto"
-              value={5}
-              onChange={(e) => console.log(e.target.value)}
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
             >
               <option value="5">5</option>
               <option value="10">10</option>
@@ -300,9 +341,15 @@ const ChecksRadios = () => {
               <option value="50">50</option>
             </select>
           </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => setModalVisibleadd(true)} 
+          >
+            Add Mission
+          </button>
         </div>
-
       </div>
+
 
       {loading ? (
         <p className="text-center">Loading...</p>
@@ -438,6 +485,75 @@ const ChecksRadios = () => {
           </div>
         </div>
       )}
+
+      {modalVisibleadd && (
+        <div className="modal show" style={{ display: 'block' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+           
+
+              <div className="modal-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                <h5 className="modal-title" style={{ margin: 0 }}>Add New Mission</h5>
+                <button type="button" className="close" onClick={() => setModalVisibleadd(false)} style={{ marginLeft: "auto" }}>
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <form onSubmit={handleAddMissionSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="heading">Heading</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="heading"
+                      value={missionData?.heading || ''}
+                      onChange={(e) => setMissionData({ ...missionData, heading: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="spinCount">Spin Count</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="spinCount"
+                      value={missionData?.spinCount || ''}
+                      onChange={(e) => setMissionData({ ...missionData, spinCount: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="betAmount">Bet Amount</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="betAmount"
+                      value={missionData?.betAmount || ''}
+                      onChange={(e) => setMissionData({ ...missionData, betAmount: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="prizeAmount">Prize Amount</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="prizeAmount"
+                      value={missionData?.prizeAmount || ''}
+                      onChange={(e) => setMissionData({ ...missionData, prizeAmount: e.target.value })}
+                    />
+                  </div>
+                  {/* Add more fields as needed */}
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={() => setModalVisibleadd(false)}>
+                      Close
+                    </button>
+                    <button type="submit" className="btn btn-primary">Save Mission</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
 
     </div>
   );
