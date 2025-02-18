@@ -27,8 +27,6 @@ const App = () => {
   const storedToken = localStorage.getItem('token')
   const storedRole = localStorage.getItem('role')
 
-  console.log('location.pathname', location.pathname)
-  console.log('window.location.hash', window.location.href)
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.href.split('?')[1])
