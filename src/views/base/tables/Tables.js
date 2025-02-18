@@ -36,7 +36,6 @@ const Tables = () => {
     setLoading(true);
     try {
       const response = await axios.post(`${port}customer_list`, {
-        // const response = await axios.post(`https://newpenal.pandpinfotech.com/backend/getall/clients`, {
 
         limit: itemsPerPage,
         page: currentPage,
@@ -52,7 +51,7 @@ const Tables = () => {
       // setTotalPages(Math.ceil(response.data.pagination.total / itemsPerPage));
 
 
-      setData(response.data.custmers || []);
+      setData(response.data.cusromer || []);
       setTotalCount(response.data.customer_count);
       setTotalPages(Math.ceil(response.data.customer_count / itemsPerPage));
     } catch (error) {
