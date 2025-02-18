@@ -20,7 +20,7 @@ import { cilLockLocked } from '@coreui/icons'
 import Swal from 'sweetalert2'
 import { Eye, EyeOff } from "lucide-react"; // ✅ Lucide icons import
 import { port } from "../../../port.js";
-console.log(port, "port000000000000");
+
 const ForgatePassword = () => {
 
 

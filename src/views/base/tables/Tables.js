@@ -9,9 +9,9 @@ import { FaEye } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { port } from "../../../port.js";
-console.log(port, "port000000000000");
+
 const Tables = () => {
-  console.log("Tables");
+  
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
