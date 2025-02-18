@@ -47,10 +47,6 @@ CoreUI is meant to be the UX game changer. Pure & transparent code is devoid of 
 | --- | --- |
 | [![CoreUI PRO React Admin Template](https://coreui.io/images/templates/coreui_pro_default_v3_light_dark.webp)](https://coreui.io/product/react-dashboard-template/?theme=modern) | [![CoreUI PRO React Admin Template](https://coreui.io/images/templates/coreui_pro_light_v3_light_dark.webp)](https://coreui.io/product/react-dashboard-template/?theme=bright)|
 
-## Quick Start
-
-- [Download the latest release](https://github.com/coreui/coreui-free-react-admin-template/archive/refs/heads/main.zip)
-- Clone the repo: `git clone https://github.com/coreui/coreui-free-react-admin-template.git`
 
 ### Installation
 
