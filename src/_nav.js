@@ -20,6 +20,7 @@ import { FaGift } from "react-icons/fa6";
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 import { TbMessageReportFilled } from "react-icons/tb";
 import { IoNotificationsSharp } from "react-icons/io5";
+import { SiTransmission } from "react-icons/si";
 
 
 const _nav = [
@@ -51,6 +52,12 @@ const _nav = [
     name: 'Report',
     to: '/admin/report',
     icon: <TbMessageReportFilled className="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Mission',
+    to: '/admin/mission',
+    icon: <SiTransmission className="nav-icon" />,
   },
   {
     component: CNavItem,

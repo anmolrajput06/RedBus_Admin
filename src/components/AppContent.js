@@ -7,6 +7,7 @@ const Dashboard = React.lazy(() => import('../views/dashboard/Dashboard'))
 const Tables = React.lazy(() => import('../views/base/tables/Tables'))
 const Report = React.lazy(() => import('../views/report/Report'))
 const Charts = React.lazy(() => import('../views/charts/Charts'))
+const ChecksRadios = React.lazy(()=>import('../views/forms/checks-radios/ChecksRadios'))
 
 const AppContent = () => {
   return (
@@ -17,6 +18,7 @@ const AppContent = () => {
           <Route path="tables" element={<Tables />} />
           <Route path="dailywheel" element={<Charts />} />
           <Route path="report" element={<Report />} />
+          <Route path='mission' element={<ChecksRadios />} />
         </Routes>
       </Suspense>
     </CContainer>

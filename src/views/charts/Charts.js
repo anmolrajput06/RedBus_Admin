@@ -70,6 +70,7 @@ const DailyWheel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+console.log(true,"000000000000");
 
     const formattedData = Object.keys(wheelData).reduce((acc, key) => {
       acc[`value${key}`] = wheelData[key]
@@ -166,18 +167,19 @@ const DailyWheel = () => {
               })}
             </tbody>
           </table>
-        </form>
+        
         <div className="flex justify-center mt-4 ">
         <div className="d-flex justify-content-center">
           <button
             type="submit"
             style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#6261cc' ,width: '200px', height: '50px', color: 'white', borderRadius: '5px', fontSize: '20px',marginTop:0}}
-            className="form-control "
+            className="form-control"
           >
             Update Data
           </button>
           </div>
         </div>
+      </form>
       </div>
     </div>
   )
