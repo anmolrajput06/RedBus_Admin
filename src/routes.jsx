@@ -57,7 +57,8 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/admin/tables', name: 'User List', element: Tables },
   { path: '/admin/dailywheel', name: 'Daily Wheel', element: Charts },
-  { path: '/admin/report', name: 'Report', element: Report }
+  { path: '/admin/report', name: 'Report', element: Report },
+
 ]
 
 export default routes

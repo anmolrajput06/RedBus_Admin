@@ -34,7 +34,8 @@ const Report = () => {
   const fetchData = debounce(async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${port}ustomer_list`, {
+      const response = await axios.post(`${port}customer_list`, {
+
         limit: itemsPerPage,
         page: currentPage,
         globlesearch: searchTerm,
@@ -42,7 +43,7 @@ const Report = () => {
         toDate,
       });
 
-      console.log(response.data.cusromer, "----------");
+      console.log(response, "----------");
 
       setData(response.data.cusromer || []);
       setTotalCount(response.data.customer_count);

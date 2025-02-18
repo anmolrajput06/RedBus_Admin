@@ -19,6 +19,8 @@ import { FaUsers } from "react-icons/fa";
 import { FaGift } from "react-icons/fa6";
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 import { TbMessageReportFilled } from "react-icons/tb";
+import { IoNotificationsSharp } from "react-icons/io5";
+
 
 const _nav = [
   {
@@ -49,6 +51,12 @@ const _nav = [
     name: 'Report',
     to: '/admin/report',
     icon: <TbMessageReportFilled className="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Notification',
+    to: '/admin/notification',
+    icon: <IoNotificationsSharp className="nav-icon" />,
   }
 ];
 
