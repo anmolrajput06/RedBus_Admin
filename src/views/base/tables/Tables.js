@@ -9,9 +9,10 @@ import { FaEye } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { port } from "../../../port.js";
+const today = new Date(); // Get today's date
 
 const Tables = () => {
-  
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +33,7 @@ const Tables = () => {
     setModalVisible(true);
   };
 
-  const fetchData =async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
       const response = await axios.post(`${port}customer_list`, {
@@ -151,7 +152,7 @@ const Tables = () => {
             />
           )}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <DatePicker
             selectsRange={true}
             startDate={fromDate}
@@ -162,15 +163,14 @@ const Tables = () => {
             dateFormat="yyyy-MM-dd"
             placeholderText="Select date range"
             onKeyDown={(e) => e.preventDefault()}
-            style={{ flex: 1 }} // To allow DatePicker to take the available space
+            style={{ flex: 1 }}
+            maxDate={today} 
           />
-
           <div>
             <select
               className="form-select d-inline w-auto"
-              value={itemsPerPage}
-              onChange={handleItemsPerPageChange}
-              style={{ width: 'auto', display: 'inline-block' }}
+              value={5}
+              onChange={(e) => console.log(e.target.value)}
             >
               <option value="5">5</option>
               <option value="10">10</option>

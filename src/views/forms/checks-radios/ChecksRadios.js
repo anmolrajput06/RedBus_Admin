@@ -1,393 +1,446 @@
-import React from 'react'
-import { CCard, CCardBody, CCardHeader, CCol, CFormCheck, CFormSwitch, CRow } from '@coreui/react'
-import { DocsComponents, DocsExample } from 'src/components'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useTable } from "react-table";
+import ReactPaginate from "react-paginate";
+import StatusToggle from "../../base/tables/Toggle.js";
+import { X } from "lucide-react";
+import { debounce } from "lodash";
+import { FaEdit, FaTrash } from "react-icons/fa"; // Import the Trash icon for delete
+import DatePicker from "react-datepicker";
+import Swal from 'sweetalert2'
+
+import "react-datepicker/dist/react-datepicker.css";
+import { port } from "../../../port.js";
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
+const today = new Date(); // Get today's date
 
 const ChecksRadios = () => {
-  return (
-    <CRow>
-      <CCol xs={12}>
-        <DocsComponents href="forms/checks-radios/" />
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Checkbox</strong>
-          </CCardHeader>
-          <CCardBody>
-            <DocsExample href="forms/checks-radios">
-              <CFormCheck id="flexCheckDefault" label="Default checkbox" />
-              <CFormCheck id="flexCheckChecked" label="Checked checkbox" defaultChecked />
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Checkbox</strong> <small>Disabled</small>
-          </CCardHeader>
-          <CCardBody>
-            <p className="text-body-secondary small">
-              Add the <code>disabled</code> attribute and the associated <code>&lt;label&gt;</code>s
-              are automatically styled to match with a lighter color to help indicate the
-              input&#39;s state.
-            </p>
-            <DocsExample href="forms/checks-radios#disabled">
-              <CFormCheck label="Disabled checkbox" disabled />
-              <CFormCheck label="Disabled checked checkbox" defaultChecked disabled />
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Radio</strong>
-          </CCardHeader>
-          <CCardBody>
-            <p className="text-body-secondary small">
-              Add the <code>disabled</code> attribute and the associated <code>&lt;label&gt;</code>s
-              are automatically styled to match with a lighter color to help indicate the
-              input&#39;s state.
-            </p>
-            <DocsExample href="forms/checks-radios#radios">
-              <CFormCheck
-                type="radio"
-                name="flexRadioDefault"
-                id="flexRadioDefault1"
-                label="Default radio"
-              />
-              <CFormCheck
-                type="radio"
-                name="flexRadioDefault"
-                id="flexRadioDefault2"
-                label="Checked radio"
-                defaultChecked
-              />
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Radio</strong> <small>Disabled</small>
-          </CCardHeader>
-          <CCardBody>
-            <DocsExample href="forms/checks-radios#disabled-1">
-              <CFormCheck
-                type="radio"
-                name="flexRadioDisabled"
-                id="flexRadioDisabled"
-                label="Disabled radio"
-                disabled
-              />
-              <CFormCheck
-                type="radio"
-                name="flexRadioDisabled"
-                id="flexRadioCheckedDisabled"
-                label="Disabled checked radio"
-                defaultChecked
-                disabled
-              />
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Switches</strong>
-          </CCardHeader>
-          <CCardBody>
-            <p className="text-body-secondary small">
-              A switch has the markup of a custom checkbox but uses the <code>switch</code> boolean
-              properly to render a toggle switch. Switches also support the <code>disabled</code>{' '}
-              attribute.
-            </p>
-            <DocsExample href="forms/checks-radios#switches">
-              <CFormSwitch label="Default switch checkbox input" id="formSwitchCheckDefault" />
-              <CFormSwitch
-                label="Checked switch checkbox input"
-                id="formSwitchCheckChecked"
-                defaultChecked
-              />
-              <CFormSwitch
-                label="Disabled switch checkbox input"
-                id="formSwitchCheckDisabled"
-                disabled
-              />
-              <CFormSwitch
-                label="Disabled checked switch checkbox input"
-                id="formSwitchCheckCheckedDisabled"
-                defaultChecked
-                disabled
-              />
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Switches</strong> <small>Sizes</small>
-          </CCardHeader>
-          <CCardBody>
-            <DocsExample href="forms/checks-radios#sizes">
-              <CFormSwitch label="Default switch checkbox input" id="formSwitchCheckDefault" />
-              <CFormSwitch
-                size="lg"
-                label="Large switch checkbox input"
-                id="formSwitchCheckDefaultLg"
-              />
-              <CFormSwitch
-                size="xl"
-                label="Extra large switch checkbox input"
-                id="formSwitchCheckDefaultXL"
-              />
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Checks and Radios</strong> <small>Default layout (stacked)</small>
-          </CCardHeader>
-          <CCardBody>
-            <p className="text-body-secondary small">
-              By default, any number of checkboxes and radios that are immediate sibling will be
-              vertically stacked and appropriately spaced.
-            </p>
-            <DocsExample href="forms/checks-radios#default-stacked">
-              <CFormCheck id="defaultCheck1" label="Default checkbox" />
-              <CFormCheck id="defaultCheck2" label="Disabled checkbox" disabled />
-            </DocsExample>
-            <DocsExample href="forms/checks-radios#default-stacked">
-              <CFormCheck
-                type="radio"
-                name="exampleRadios"
-                id="exampleRadios1"
-                value="option1"
-                label="Default radio"
-                defaultChecked
-              />
-              <CFormCheck
-                type="radio"
-                name="exampleRadios"
-                id="exampleRadios2"
-                value="option2"
-                label="Second default radio"
-              />
-              <CFormCheck
-                type="radio"
-                name="exampleRadios"
-                id="exampleRadios3"
-                value="option3"
-                label="Disabled radio"
-                disabled
-              />
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Checks and Radios</strong> <small>Inline</small>
-          </CCardHeader>
-          <CCardBody>
-            <p className="text-body-secondary small">
-              Group checkboxes or radios on the same horizontal row by adding <code>inline</code>{' '}
-              boolean property to any <code>&lt;CFormCheck&gt;</code>.
-            </p>
-            <DocsExample href="forms/checks-radios#inline">
-              <CFormCheck inline id="inlineCheckbox1" value="option1" label="1" />
-              <CFormCheck inline id="inlineCheckbox2" value="option2" label="2" />
-              <CFormCheck
-                inline
-                id="inlineCheckbox3"
-                value="option3"
-                label="3 (disabled)"
-                disabled
-              />
-            </DocsExample>
-            <DocsExample href="forms/checks-radios#inline">
-              <CFormCheck
-                inline
-                type="radio"
-                name="inlineRadioOptions"
-                id="inlineCheckbox1"
-                value="option1"
-                label="1"
-              />
-              <CFormCheck
-                inline
-                type="radio"
-                name="inlineRadioOptions"
-                id="inlineCheckbox2"
-                value="option2"
-                label="2"
-              />
-              <CFormCheck
-                inline
-                type="radio"
-                name="inlineRadioOptions"
-                id="inlineCheckbox3"
-                value="option3"
-                label="3 (disabled)"
-                disabled
-              />
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>React Checks and Radios</strong> <small>Without labels</small>
-          </CCardHeader>
-          <CCardBody>
-            <p className="text-body-secondary small">
-              Remember to still provide some form of accessible name for assistive technologies (for
-              instance, using <code>aria-label</code>).
-            </p>
-            <DocsExample href="forms/checks-radios#without-labels">
-              <div>
-                <CFormCheck id="checkboxNoLabel" value="" aria-label="..." />
-              </div>
-              <div>
-                <CFormCheck
-                  type="radio"
-                  name="radioNoLabel"
-                  id="radioNoLabel"
-                  value=""
-                  aria-label="..."
-                />
-              </div>
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader>
-            <strong>Toggle buttons</strong>
-          </CCardHeader>
-          <CCardBody>
-            <p className="text-body-secondary small">
-              Create button-like checkboxes and radio buttons by using <code>button</code> boolean
-              property on the <code>&lt;CFormCheck&gt;</code> component. These toggle buttons can
-              further be grouped in a button group if needed.
-            </p>
-            <DocsExample href="forms/checks-radios#toggle-buttons">
-              <CFormCheck
-                button={{ color: 'primary ' }}
-                id="btn-check"
-                autoComplete="off"
-                label="Single toggle"
-              />
-            </DocsExample>
-            <DocsExample href="forms/checks-radios#toggle-buttons">
-              <CFormCheck
-                button={{ color: 'primary ' }}
-                id="btn-check-2"
-                autoComplete="off"
-                label="Checked"
-                defaultChecked
-              />
-            </DocsExample>
-            <DocsExample href="forms/checks-radios#toggle-buttons">
-              <CFormCheck
-                button={{ color: 'primary ' }}
-                id="btn-check-3"
-                autoComplete="off"
-                label="Disabled"
-                disabled
-              />
-            </DocsExample>
-            <h3>Radio toggle buttons</h3>
-            <DocsExample href="forms/checks-radios#toggle-buttons">
-              <CFormCheck
-                button={{ color: 'secondary' }}
-                type="radio"
-                name="options"
-                id="option1"
-                autoComplete="off"
-                label="Checked"
-                defaultChecked
-              />
-              <CFormCheck
-                button={{ color: 'secondary' }}
-                type="radio"
-                name="options"
-                id="option2"
-                autoComplete="off"
-                label="Radio"
-              />
-              <CFormCheck
-                button={{ color: 'secondary' }}
-                type="radio"
-                name="options"
-                id="option3"
-                autoComplete="off"
-                label="Radio"
-                disabled
-              />
-              <CFormCheck
-                button={{ color: 'secondary' }}
-                type="radio"
-                name="options"
-                id="option4"
-                autoComplete="off"
-                label="Radio"
-              />
-            </DocsExample>
-            <h3>Outlined styles</h3>
-            <p className="text-body-secondary small">
-              Different variants of button, such at the various outlined styles, are supported.
-            </p>
-            <DocsExample href="forms/checks-radios#toggle-buttons">
-              <div>
-                <CFormCheck
-                  button={{ color: 'primary', variant: 'outline' }}
-                  id="btn-check-outlined"
-                  autoComplete="off"
-                  label="Single toggle"
-                />
-              </div>
-              <div>
-                <CFormCheck
-                  button={{ color: 'secondary', variant: 'outline' }}
-                  id="btn-check-2-outlined"
-                  autoComplete="off"
-                  label="Checked"
-                  defaultChecked
-                />
-              </div>
-              <div>
-                <CFormCheck
-                  button={{ color: 'success', variant: 'outline' }}
-                  type="radio"
-                  name="options-outlined"
-                  id="success-outlined"
-                  autoComplete="off"
-                  label="Radio"
-                  defaultChecked
-                />
-                <CFormCheck
-                  button={{ color: 'danger', variant: 'outline' }}
-                  type="radio"
-                  name="options-outlined"
-                  id="danger-outlined"
-                  autoComplete="off"
-                  label="Radio"
-                />
-              </div>
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-    </CRow>
-  )
-}
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [missionData, setMissionData] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [customerId, setCustomerId] = useState(null);
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [fromDate, toDate] = dateRange;
 
-export default ChecksRadios
+  const handleViewDetails = (id) => {
+    setCustomerId(id);
+    setModalVisible(true);
+  };
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      console.log(missionData, "missionData");
+      const response = await axios.post(`${port}update_mission_data`, {
+        missionid: missionData.id,
+        heading: missionData.heading,
+        spinCount: missionData.spinCount,
+        betAmount: missionData.betAmount,
+        prizeAmount: missionData.prizeAmount,
+      });
+      console.log(response.data.status == 200, "response.data");
+
+      if (response.data.status == 200) {
+
+        MySwal.fire({
+          title: 'Updated Success!',
+          text: response.data.msg,
+          icon: 'success',
+          confirmButtonText: 'OK',
+          timer: 2000,
+        }).then(() => {
+          setModalVisible(false);
+          fetchData();
+        })
+      } else {
+        MySwal.fire({
+          title: 'Error!',
+          text: response.data.msg,
+          icon: 'error',
+          confirmButtonText: 'Try Again',
+        })
+      }
+    } catch (error) {
+      console.error("Error updating mission data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${port}get_mission_list`, {
+        limit: itemsPerPage,
+        page: currentPage,
+        globlesearch: searchTerm,
+        fromDate,
+        toDate,
+      });
+
+      setData(response.data.missionData || []);
+      setTotalCount(response.data.missionDataCount);
+      setTotalPages(Math.ceil(response.data.missionDataCount / itemsPerPage));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, itemsPerPage, fromDate, toDate]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    fetchData();
+  }, [searchTerm]);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected + 1);
+  };
+
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  };
+
+  const clearSearch = () => {
+    setSearchTerm("");
+  };
+  const handleDelete = async (missionid) => {
+    // Show confirmation modal using SweetAlert
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.post(`${port}delete_mission_data`, {
+          missionid: missionid,
+        });
+
+        if (response.data.status == 200) {
+          Swal.fire(
+            'Deleted!',
+            response.data.msg,
+            'success'
+          );
+          fetchData();
+        } else {
+          Swal.fire(
+            'Error!',
+            'Failed to delete the mission.',
+            'error'
+          );
+        }
+      } catch (error) {
+        console.error("Error deleting mission:", error);
+        Swal.fire(
+          'Error!',
+          'An error occurred while deleting the mission.',
+          'error'
+        );
+      }
+    }
+  };
+
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "S.No",
+        accessor: "serial",
+        Cell: ({ row }) => (currentPage - 1) * itemsPerPage + row.index + 1
+      },
+      { Header: "Name", accessor: "heading" },
+      { Header: "Spin Count", accessor: "spinCount" },
+      { Header: "Bet Amount", accessor: "betAmount" },
+      { Header: "Prize Amount", accessor: "prizeAmount" },
+      {
+        Header: "Created At",
+        accessor: "createdAt",
+        Cell: ({ value }) => {
+          const date = new Date(value);
+          return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "2-digit",
+          }).replace(",", "");
+        },
+      },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: ({ row }) => (
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {/* Edit button */}
+            <button
+              onClick={() => handleEdit(row.original)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "#6261cc",
+              }}
+            >
+              <FaEdit size={18} />
+            </button>
+
+            {/* Delete button */}
+            <button
+              onClick={() => handleDelete(row.original.id)} // Call delete function
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "#6261cc",
+              }}
+            >
+              <FaTrash size={18} />
+            </button>
+          </div>
+        ),
+      },
+    ],
+    [currentPage, itemsPerPage]
+  );
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data,
+  });
+
+  const handleDateChange = (update) => {
+    setDateRange(update);
+    setCurrentPage(1);
+  };
+
+  const handleEdit = async (rowData) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${port}get_mission_data`, {
+        id: rowData.id,
+      });
+      console.log(response.data, "response.data");
+
+      setMissionData(response.data.missionData);
+      setModalVisible(true);
+    } catch (error) {
+      console.error("Error fetching mission details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  return (
+    <div className="container">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <div style={{ position: "relative", width: "250px" }}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <X
+              size={20}
+              className="position-absolute"
+              style={{
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#aaa",
+              }}
+              onClick={clearSearch}
+            />
+          )}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <DatePicker
+            selectsRange={true}
+            startDate={fromDate}
+            endDate={toDate}
+            onChange={handleDateChange}
+            className="form-control"
+            isClearable={true}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select date range"
+            onKeyDown={(e) => e.preventDefault()}
+            style={{ flex: 1 }}
+            maxDate={today} // Disable dates after today
+          />
+          <div>
+            <select
+              className="form-select d-inline w-auto"
+              value={5}
+              onChange={(e) => console.log(e.target.value)}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      {loading ? (
+        <p className="text-center">Loading...</p>
+      ) : (
+        <>
+          <table {...getTableProps()} className="table table-bordered">
+            <thead className="table-dark">
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+                  {headerGroup.headers.map((column) => (
+                    <th {...column.getHeaderProps()} key={column.id}>
+                      {column.render("Header")}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {rows.length > 0 ? (
+                rows.map((row) => {
+                  prepareRow(row);
+                  return (
+                    <tr {...row.getRowProps()} key={row.id}>
+                      {row.cells.map((cell) => (
+                        <td {...cell.getCellProps()} key={cell.column.id}>
+                          {cell.render("Cell")}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={columns.length} className="text-center">
+                    No results found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          {totalPages > 1 && (
+            <div className="position-relative mt-3">
+              <ReactPaginate
+                previousLabel={"← Pre"}
+                nextLabel={"Next →"}
+                breakLabel={"..."}
+                pageCount={totalPages}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination justify-content-center"}
+                pageClassName={"page-item"}
+                pageLinkClassName={"page-link"}
+                previousClassName={"page-item"}
+                previousLinkClassName={"page-link"}
+                nextClassName={"page-item"}
+                nextLinkClassName={"page-link"}
+                breakClassName={"page-item"}
+                breakLinkClassName={"page-link"}
+                activeClassName={"active"}
+                forcePage={currentPage - 1}
+              />
+            </div>
+          )}
+        </>
+      )}
+
+      {modalVisible && missionData && (
+        <div className="modal show" style={{ display: 'block' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                <h5 className="modal-title" style={{ margin: 0 }}>Edit Mission Data</h5>
+                <button type="button" className="close" onClick={() => setModalVisible(false)} style={{ marginLeft: "auto" }}>
+                  <span>&times;</span>
+                </button>
+              </div>
+
+              <div className="modal-body">
+                <form onSubmit={handleFormSubmit}>
+                  <div className="form-group">
+                    <label htmlFor="heading">Heading</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="heading"
+                      value={missionData.heading}
+                      onChange={(e) => setMissionData({ ...missionData, heading: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="spinCount">Spin Count</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="spinCount"
+                      value={missionData.spinCount}
+                      onChange={(e) => setMissionData({ ...missionData, spinCount: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="betAmount">Bet Amount</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="betAmount"
+                      value={missionData.betAmount}
+                      onChange={(e) => setMissionData({ ...missionData, betAmount: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="prizeAmount">Prize Amount</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="prizeAmount"
+                      value={missionData.prizeAmount}
+                      onChange={(e) => setMissionData({ ...missionData, prizeAmount: e.target.value })}
+                    />
+                  </div>
+                  {/* Add other fields as needed */}
+
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={() => setModalVisible(false)}>
+                      Close
+                    </button>
+                    <button type="submit" className="btn btn-primary">Save changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+export default ChecksRadios;
