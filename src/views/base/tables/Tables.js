@@ -45,16 +45,16 @@ const Tables = () => {
         toDate,
       });
 
-      console.log(response.data.pagination.total, "----------");
-
-      setData(response.data.data || []);
-      setTotalCount(response.data.pagination.total);
-      setTotalPages(Math.ceil(response.data.pagination.total / itemsPerPage));
-
+      // console.log(response.data.pagination.total, "----------");
 
       // setData(response.data.data || []);
-      // setTotalCount(response.data.customer_count);
-      // setTotalPages(Math.ceil(response.data.customer_count / itemsPerPage));
+      // setTotalCount(response.data.pagination.total);
+      // setTotalPages(Math.ceil(response.data.pagination.total / itemsPerPage));
+
+
+      setData(response.data.data || []);
+      setTotalCount(response.data.customer_count);
+      setTotalPages(Math.ceil(response.data.customer_count / itemsPerPage));
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
