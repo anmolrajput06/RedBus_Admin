@@ -52,7 +52,7 @@ const Tables = () => {
       // setTotalPages(Math.ceil(response.data.pagination.total / itemsPerPage));
 
 
-      setData(response.data.data || []);
+      setData(response.data.custmers || []);
       setTotalCount(response.data.customer_count);
       setTotalPages(Math.ceil(response.data.customer_count / itemsPerPage));
     } catch (error) {
