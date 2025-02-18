@@ -32,7 +32,7 @@ const Tables = () => {
     setModalVisible(true);
   };
 
-  const fetchData = debounce(async () => {
+  const fetchData =async () => {
     setLoading(true);
     try {
       const response = await axios.post(`${port}customer_list`, {
@@ -60,7 +60,7 @@ const Tables = () => {
     } finally {
       setLoading(false);
     }
-  }, 500);
+  }
 
   useEffect(() => {
     fetchData();
