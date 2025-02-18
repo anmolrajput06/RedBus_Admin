@@ -108,11 +108,11 @@ const DailyWheel = () => {
     <div className="container">
 
 
-      <div className="p-4 bg-light min-h-screen">
-        <form onSubmit={handleSubmit} className="bg-white p-4 shadow-md rounded-md">
+      <div className="p-4 min-h-screen">
+        <form onSubmit={handleSubmit} className="p-4 shadow-md rounded-md">
           <table className="w-3/4 border-collapse border border-gray-300 mx-auto">
             <thead>
-              <tr className="text-black">
+              <tr >
                 <th className="border p-4 text-left w-1/4">S.No</th>
                 <th className="border p-4 text-left w-1/4">Value</th>
                 <th className="border p-4 text-left w-1/4"></th>
@@ -125,7 +125,7 @@ const DailyWheel = () => {
               {firstHalf.map(([key1, value1], index) => {
                 const [key2, value2] = secondHalf[index] || ["", ""];
                 return (
-                  <tr className="text-black" key={key1}>
+                  <tr  key={key1}>
                     <td className="border p-4 font-semibold text-left">{key1}</td>
                     <td className="border p-4 text-left">
                       <input
@@ -133,7 +133,7 @@ const DailyWheel = () => {
                         name={key1}
                         value={value1}
                         onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded bg-light text-dark"
+                        className="form-control"
                       />
                     </td>
                     <td className="border p-4"></td>
@@ -145,7 +145,7 @@ const DailyWheel = () => {
                           name={key2}
                           value={value2}
                           onChange={handleChange}
-                          className="w-full p-2 border border-gray-300 rounded bg-light text-dark"
+                          className="form-control"
                         />
                       )}
                     </td>
@@ -157,7 +157,7 @@ const DailyWheel = () => {
           <button
             type="submit"
             style={{ marginLeft: "44%" }}
-            className="mt-4 px-4 py-2 bg-blue-500 text-black rounded hover:bg-blue-800"
+            className="mt-4 px-4 py-2  rounded hover:bg-blue-800"
           >
             Update Data
           </button>

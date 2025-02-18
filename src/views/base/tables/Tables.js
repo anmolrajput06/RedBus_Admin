@@ -35,7 +35,9 @@ const Tables = () => {
   const fetchData = debounce(async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${port}customer_list`, {
+      // const response = await axios.post(`${port}customer_list`, {
+        const response = await axios.post(`https://newpenal.pandpinfotech.com/backend/getall/clients`, {
+
         limit: itemsPerPage,
         page: currentPage,
         globlesearch: searchTerm,
@@ -43,11 +45,16 @@ const Tables = () => {
         toDate,
       });
 
-      console.log(response.data.cusromer, "----------");
+      console.log(response.data.pagination.total, "----------");
 
-      setData(response.data.cusromer || []);
-      setTotalCount(response.data.customer_count);
-      setTotalPages(Math.ceil(response.data.customer_count / itemsPerPage));
+      setData(response.data.data || []);
+      setTotalCount(response.data.pagination.total);
+      setTotalPages(Math.ceil(response.data.pagination.total / itemsPerPage));
+
+
+      // setData(response.data.data || []);
+      // setTotalCount(response.data.customer_count);
+      // setTotalPages(Math.ceil(response.data.customer_count / itemsPerPage));
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -215,7 +222,7 @@ const Tables = () => {
           {totalPages > 1 && (
             <div className="position-relative mt-3">
               <ReactPaginate
-                previousLabel={"← Previous"}
+                previousLabel={"← Pre"}
                 nextLabel={"Next →"}
                 breakLabel={"..."}
                 pageCount={totalPages}
