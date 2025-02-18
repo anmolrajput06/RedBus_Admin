@@ -27,7 +27,7 @@ import avatar8 from './../../assets/images/avatars/8.jpg'
 const AppHeaderDropdown = () => {
 
   const LogOut = () => {
-    console.log('logout')
+
     localStorage.removeItem('token')
     localStorage.removeItem('role')
     window.location.href = '/#/login'

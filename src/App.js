@@ -18,16 +18,17 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const ForgatePassword = React.lazy(() => import('./views/pages/forgatepass/ForgatePass'))
 
-
 const App = () => {
   const navigate = useNavigate()
-  const location = useLocation();
+  const location = useLocation()
 
   const { isColorModeSet, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
   const storedTheme = useSelector((state) => state.theme)
   const storedToken = localStorage.getItem('token')
   const storedRole = localStorage.getItem('role')
 
+  console.log('location.pathname', location.pathname)
+  console.log('window.location.hash', window.location.href)
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.href.split('?')[1])
@@ -44,25 +45,29 @@ const App = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-
-console.log(location.pathname,"0");
-
     if (!storedToken || !storedRole) {
-      if (location.pathname.includes("#/reset") || location.pathname.includes("/reset")) {
+      if(!window.location.href.includes('/#/')) {
+        window.location.href = '/#/login'
+      }
+      if (location.pathname.includes('#/reset') || location.pathname.includes('/reset')) {
         navigate('/reset')
-      }
-      else {
+      } else {
         navigate('/login')
-
       }
-    }
+    } else if (storedToken && storedRole === 'ADMIN') {
+      if (location.pathname == '/') {
+        navigate('/admin/dashboard')
+      }
+      if (location.pathname.includes('login')) {
+        navigate('/admin/dashboard')
+      }
 
+      if(!window.location.href.includes('/#/')) {
+        window.location.href = '/#/admin/dashboard'
+      }
 
-    else if (storedToken && storedRole === 'ADMIN' && location.pathname == "/login") {
-      navigate('/admin/dashboard')
     }
   }, [storedToken, storedRole, location.pathname])
-
 
   return (
     <Suspense
@@ -73,17 +78,12 @@ console.log(location.pathname,"0");
       }
     >
       <Routes>
-
         <Route path="/login" name="Login Page" element={<Login />} />
         <Route path="/register" name="Register Page" element={<Register />} />
-        <Route path='/reset' name="Forgate Password Page" element={<ForgatePassword />} />
-        <Route path="/" name="Page 404" element={<Login />} />
+        <Route path="/reset" name="Forgate Password Page" element={<ForgatePassword />} />
+        <Route path="/" name="Login Page" element={<Login />} />
         <Route path="/500" name="Page 500" element={<Page500 />} />
-        <Route
-          path="/admin/*"
-          element={storedRole === "ADMIN" ? <DefaultLayout /> : <Login />}
-        />
-
+        <Route path="/admin/*" element={storedRole === 'ADMIN' ? <DefaultLayout /> : <Login />} />
       </Routes>
     </Suspense>
   )
