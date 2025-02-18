@@ -242,9 +242,9 @@ const Tables = () => {
                 forcePage={currentPage - 1}
               />
 
-              <div className="position-absolute end-0 top-50 translate-middle-y">
+              {/* <div className="position-absolute end-0 top-50 translate-middle-y">
                 <strong>Showing {data.length} of {totalCount} records</strong>
-              </div>
+              </div> */}
             </div>
           )}
         </>
