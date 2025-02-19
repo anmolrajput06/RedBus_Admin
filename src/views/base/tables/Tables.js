@@ -4,7 +4,6 @@ import { useTable } from "react-table";
 import ReactPaginate from "react-paginate";
 import StatusToggle from "./Toggle";
 import { X } from "lucide-react";
-import { debounce } from "lodash";
 import { FaEye } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";

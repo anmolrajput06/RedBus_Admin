@@ -2,20 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useTable } from "react-table";
 import ReactPaginate from "react-paginate";
-import StatusToggle from "../../base/tables/Toggle.js";
 import { X } from "lucide-react";
-import { debounce } from "lodash";
-import { FaEdit, FaTrash } from "react-icons/fa"; // Import the Trash icon for delete
+import { FaEdit, FaTrash } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import Swal from 'sweetalert2'
 import { CFormInput, CButton, CFormLabel, CFormCheck, CFormSelect } from "@coreui/react";
-
-
 import "react-datepicker/dist/react-datepicker.css";
 import { port } from "../../../port.js";
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
-const today = new Date(); // Get today's date
+const today = new Date();
 
 const ChecksRadios = () => {
   const [data, setData] = useState([]);
@@ -23,17 +19,14 @@ const ChecksRadios = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [missionData, setMissionData] = useState(null);
-
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [modalVisibleadd, setModalVisibleadd] = useState(false);
-
   const [modalVisible, setModalVisible] = useState(false);
-
   const [dateRange, setDateRange] = useState([null, null]);
   const [fromDate, toDate] = dateRange;
-
+  const [errors, setErrors] = useState({});
 
   const initialFormState = {
     isBetAmount: false,
@@ -46,7 +39,6 @@ const ChecksRadios = () => {
     heading: "",
     symbol: ""
   };
-
   const [formData, setFormData] = useState(initialFormState);
 
   const handleFormSubmit = async (e) => {
@@ -89,11 +81,32 @@ const ChecksRadios = () => {
       setLoading(false);
     }
   };
+
   const handleAddMissionSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      let newErrors = {};
+
+
+      if (!formData.prizeAmount) {
+        newErrors.prizeAmount = "Prize Amount is required";
+      }
+      if (!formData.spinCount) {
+        newErrors.spinCount = "Spin Countis required";
+      }
+      if (!formData.heading) {
+        newErrors.heading = "Mission Name is required"
+      }
+      if (!formData.symbol) {
+        newErrors.symbol = "Symbol is required"
+      }
+
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
       const requestData = {
         heading: formData.heading,
         spinCount: formData.spinCount || 0,
@@ -116,7 +129,7 @@ const ChecksRadios = () => {
           timer: 2000,
         }).then(() => {
           setModalVisibleadd(false);
-          fetchData();  
+          fetchData();
         });
       } else {
         Swal.fire({
@@ -175,6 +188,7 @@ const ChecksRadios = () => {
   const clearSearch = () => {
     setSearchTerm("");
   };
+
   const handleDelete = async (missionid) => {
     // Show confirmation modal using SweetAlert
     const result = await Swal.fire({
@@ -218,6 +232,19 @@ const ChecksRadios = () => {
     }
   };
 
+  const handleOpenModal = () => {
+    setFormData({
+      prizeAmount: "",
+      spinCount: "",
+      heading: "",
+      symbol: "",
+      isBetAmount: false,
+      isTimesSymbol: false,
+    });
+
+    setErrors({});
+    setModalVisibleadd(true);
+  };
 
   const columns = React.useMemo(
     () => [
@@ -317,24 +344,41 @@ const ChecksRadios = () => {
     });
   };
 
-
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: value.trim() === "" ? `${getFieldLabel(field)} is required` : "",
+    }));
   };
 
-
   const handleInputChangeNumber = (field, value) => {
-    if (/^\d*$/.test(value)) { // Allow only numbers
+    if (/^\d*$/.test(value)) {
       setFormData((prev) => ({
         ...prev,
         [field]: value,
       }));
+
+      setErrors((prev) => ({
+        ...prev,
+        [field]: value === "" ? `${getFieldLabel(field)} is required` : "",
+      }));
     }
   };
 
+  const getFieldLabel = (field) => {
+    const labels = {
+      prizeAmount: "Prize Amount",
+      spinCount: "Spin Count",
+      heading: "Mission Name",
+      symbol: "Symbol",
+    };
+    return labels[field] || "This field";
+  };
 
   useEffect(() => {
     if (modalVisibleadd) {
@@ -394,15 +438,12 @@ const ChecksRadios = () => {
               <option value="50">50</option>
             </select>
           </div>
-          <button
-            className="btn btn-primary"
-            onClick={() => setModalVisibleadd(true)}
-          >
+          <button className="btn btn-primary" onClick={handleOpenModal}>
             Add Mission
           </button>
+
         </div>
       </div>
-
 
       {loading ? (
         <p className="text-center">Loading...</p>
@@ -576,6 +617,10 @@ const ChecksRadios = () => {
                       value={formData.prizeAmount || ""}
                       onChange={(e) => handleInputChangeNumber("prizeAmount", e.target.value)}
                     />
+                    {errors.prizeAmount && (
+                      <p className="text-danger small mt-1">{errors.prizeAmount}</p>
+                    )}
+
                   </div>
 
                   <div className="mb-3">
@@ -586,6 +631,10 @@ const ChecksRadios = () => {
                       value={formData.spinCount || ""}
                       onChange={(e) => handleInputChangeNumber("spinCount", e.target.value)}
                     />
+
+                    {errors.spinCount && (
+                      <p className="text-danger small mt-1">{errors.spinCount}</p>
+                    )}
                   </div>
                   <div className="mb-3">
                     <CFormLabel htmlFor="symbol">Symbol</CFormLabel>
@@ -593,9 +642,9 @@ const ChecksRadios = () => {
                       id="symbol"
                       value={formData.symbol || ""}
                       onChange={(e) => handleInputChange("symbol", e.target.value)}
+
                     >
                       <option value="">Select a symbol</option>
-                      <option value="1">Scatter</option>
                       <option value="2">Bus</option>
                       <option value="4">London Eye</option>
                       <option value="3">Taxi</option>
@@ -604,6 +653,9 @@ const ChecksRadios = () => {
                       <option value="7">Q</option>
                       <option value="8">J</option>
                     </CFormSelect>
+                    {errors.symbol && (
+                      <p className="text-danger small mt-1">{errors.symbol}</p>
+                    )}
                   </div>
 
                   <div className="mb-3">
@@ -614,6 +666,9 @@ const ChecksRadios = () => {
                       value={formData.heading || ""}
                       onChange={(e) => handleInputChange("heading", e.target.value)}
                     />
+                    {errors.heading && (
+                      <p className="text-danger small mt-1">{errors.heading}</p>
+                    )}
                   </div>
 
                   <CButton type="submit" color="primary" className="w-full" disabled={loading}>
