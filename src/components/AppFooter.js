@@ -10,7 +10,7 @@ const AppFooter = () => {
       </div>
       <div className="ms-auto">
         <span className="me-1">Powered by</span>
-        <span style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }}>
+        <span style={{ color: "#6261cc", textDecoration: "underline", cursor: "pointer" }}>
           REDBUS
         </span>
 

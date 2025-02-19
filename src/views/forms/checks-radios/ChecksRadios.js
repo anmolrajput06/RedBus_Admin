@@ -30,7 +30,7 @@ const ChecksRadios = () => {
   });
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [modalVisibleadd, setModalVisibleadd] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [dateRange, setDateRange] = useState([null, null]);
@@ -396,7 +396,7 @@ const ChecksRadios = () => {
   };
 
   const handleInputChangeNumber = (field, value) => {
-    if (/^\d*$/.test(value)) {
+    if (/^\d*\.?\d*$/.test(value)) {
       setFormData((prev) => ({
         ...prev,
         [field]: value,
@@ -431,11 +431,10 @@ const ChecksRadios = () => {
   const [errorsupdate, setErrorsupdate] = useState({});
 
   const handleNumberChange = (field, value) => {
-    // ✅ Sirf positive numbers allow karega (No leading 0)
-    if (/^([1-9]\d*)?$/.test(value) || value === "") {
+
+    if (/^\d*\.?\d*$/.test(value) || value === "") {
       setMissionData((prev) => ({ ...prev, [field]: value }));
 
-      // ✅ Agar empty hai toh error set karo
       if (value === "") {
         setErrorsupdate((prev) => ({ ...prev, [field]: `${field === "prizeAmount" ? "Prize Amount" : "Spin Count"} is required` }));
       } else {
@@ -489,9 +488,10 @@ const ChecksRadios = () => {
               value={itemsPerPage}
               onChange={handleItemsPerPageChange}
             >
-              <option value="5">5</option>
               <option value="10">10</option>
               <option value="20">20</option>
+              <option value="30">30</option>
+
               <option value="50">50</option>
             </select>
           </div>
@@ -606,10 +606,14 @@ const ChecksRadios = () => {
                       disabled={!missionData.isBetAmount}
                       value={missionData.betAmount}
                       onChange={(e) => {
-                        setMissionData({ ...missionData, betAmount: e.target.value });
-                        setBackup((prev) => ({ ...prev, betAmount: e.target.value }));
+                        let value = e.target.value;
+                        if (/^\d*\.?\d*$/.test(value)) {
+                          setMissionData({ ...missionData, betAmount: value });
+                          setBackup((prev) => ({ ...prev, betAmount: value }));
+                        }
                       }}
                     />
+
                   </div>
 
                   <div className="mb-3">

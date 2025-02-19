@@ -4,13 +4,14 @@ import { useTable } from "react-table";
 import ReactPaginate from "react-paginate";
 import StatusToggle from "../base/tables/Toggle";
 import { X } from "lucide-react";
-import { debounce } from "lodash";
 import { FaEye } from "react-icons/fa";
 import DatePicker from "react-datepicker";
-import { port } from "../../port.js";
-console.log(port, "port000000000000");
 import "react-datepicker/dist/react-datepicker.css";
-const Report = () => {
+import { port } from "../../port.js";
+const today = new Date(); // Get today's date
+
+const Tables = () => {
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,7 +19,7 @@ const Report = () => {
 
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [customerId, setCustomerId] = useState(null);
@@ -31,7 +32,7 @@ const Report = () => {
     setModalVisible(true);
   };
 
-  const fetchData = debounce(async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
       const response = await axios.post(`${port}customer_list`, {
@@ -43,7 +44,12 @@ const Report = () => {
         toDate,
       });
 
-      console.log(response, "----------");
+      // console.log(response.data.pagination.total, "----------");
+
+      // setData(response.data.data || []);
+      // setTotalCount(response.data.pagination.total);
+      // setTotalPages(Math.ceil(response.data.pagination.total / itemsPerPage));
+
 
       setData(response.data.cusromer || []);
       setTotalCount(response.data.customer_count);
@@ -53,7 +59,7 @@ const Report = () => {
     } finally {
       setLoading(false);
     }
-  }, 500);
+  }
 
   useEffect(() => {
     fetchData();
@@ -114,7 +120,10 @@ const Report = () => {
     columns,
     data,
   });
-
+  const handleDateChange = (update) => {
+    setDateRange(update);
+    setCurrentPage(1); // Reset page to 1 when the date range changes
+  };
   return (
     <div className="container">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -142,26 +151,31 @@ const Report = () => {
             />
           )}
         </div>
-        <DatePicker
-          selectsRange={true}
-          startDate={fromDate}
-          endDate={toDate}
-          onChange={(update) => setDateRange(update)}
-          className="form-control"
-          isClearable={true}
-          dateFormat="yyyy-MM-dd"
-          placeholderText="Select date range"
-          onKeyDown={(e) => e.preventDefault()}
-        />
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <DatePicker
+            selectsRange={true}
+            startDate={fromDate}
+            endDate={toDate}
+            onChange={handleDateChange}
+            className="form-control"
+            isClearable={true}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select date range"
+            onKeyDown={(e) => e.preventDefault()}
+            style={{ flex: 1 }}
+            maxDate={today}
+          />
+          <div>
+            <select className="form-select d-inline w-auto" value={itemsPerPage} onChange={handleItemsPerPageChange}>
 
-        <div>
-          <select className="form-select d-inline w-auto" value={itemsPerPage} onChange={handleItemsPerPageChange}>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+          </div>
         </div>
+
       </div>
 
       {loading ? (
@@ -203,7 +217,7 @@ const Report = () => {
           {totalPages > 1 && (
             <div className="position-relative mt-3">
               <ReactPaginate
-                previousLabel={"← Previous"}
+                previousLabel={"← Pre"}
                 nextLabel={"Next →"}
                 breakLabel={"..."}
                 pageCount={totalPages}
@@ -223,9 +237,9 @@ const Report = () => {
                 forcePage={currentPage - 1}
               />
 
-              <div className="position-absolute end-0 top-50 translate-middle-y">
+              {/* <div className="position-absolute end-0 top-50 translate-middle-y">
                 <strong>Showing {data.length} of {totalCount} records</strong>
-              </div>
+              </div> */}
             </div>
           )}
         </>
@@ -234,4 +248,4 @@ const Report = () => {
   );
 };
 
-export default Report;
+export default Tables;
