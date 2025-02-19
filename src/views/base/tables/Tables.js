@@ -19,7 +19,7 @@ const Tables = () => {
 
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [customerId, setCustomerId] = useState(null);
@@ -166,13 +166,10 @@ const Tables = () => {
             maxDate={today} 
           />
           <div>
-            <select
-              className="form-select d-inline w-auto"
-              value={5}
-              onChange={(e) => console.log(e.target.value)}
-            >
-              <option value="5">5</option>
+          <select className="form-select d-inline w-auto" value={itemsPerPage} onChange={handleItemsPerPageChange}>
+
               <option value="10">10</option>
+              <option value="15">15</option>
               <option value="20">20</option>
               <option value="50">50</option>
             </select>

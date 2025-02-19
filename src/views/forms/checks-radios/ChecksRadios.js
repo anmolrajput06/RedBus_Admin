@@ -18,7 +18,16 @@ const ChecksRadios = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [missionData, setMissionData] = useState(null);
+
+  const [missionData, setMissionData] = useState({
+    prizeAmount: "",
+    spinCount: "",
+    isBetAmount: false,
+    isTimesSymbol: false,
+    heading: "",
+    betAmount: "",
+    symbol: ""
+  });
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -27,6 +36,7 @@ const ChecksRadios = () => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [fromDate, toDate] = dateRange;
   const [errors, setErrors] = useState({});
+
 
   const initialFormState = {
     isBetAmount: false,
@@ -44,14 +54,40 @@ const ChecksRadios = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+
+    let newErrors = {};
+
+
+    if (!missionData.prizeAmount) {
+      newErrors.prizeAmount = "Prize Amount is required";
+    }
+    if (!missionData.spinCount) {
+      newErrors.spinCount = "Spin Countis required";
+    }
+    if (!missionData.heading) {
+      newErrors.heading = "Mission Name is required"
+    }
+    // if (!missionData.symbol) {
+    //   newErrors.symbol = "Symbol is required"
+    // }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrorsupdate(newErrors);
+      return;
+    }
     try {
       console.log(missionData, "missionData");
       const response = await axios.post(`${port}update_mission_data`, {
         missionid: missionData.id,
         heading: missionData.heading,
         spinCount: missionData.spinCount,
-        betAmount: missionData.betAmount,
+        betAmount: missionData.betAmount || 0,
         prizeAmount: missionData.prizeAmount,
+        isBetAmount: missionData.isBetAmount,
+        symbol: missionData.symbol || 0,
+        isTimesSymbol: missionData.isTimesSymbol
+
       });
       console.log(response.data.status == 200, "response.data");
 
@@ -102,7 +138,10 @@ const ChecksRadios = () => {
       if (!formData.symbol) {
         newErrors.symbol = "Symbol is required"
       }
+      if (!formData.isBetAmount_value) {
+        newErrors.isBetAmount_value = "Bet Amount is required"
 
+      }
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
         return;
@@ -114,7 +153,6 @@ const ChecksRadios = () => {
         betAmount: formData.isBetAmount ? formData.isBetAmount_value : 0,
         isTimesSymbol: formData.isTimesSymbol,
         symbol: formData.symbol || 0,
-        timesSymbol: formData.isTimesSymbol ? formData.isTimesSymbol_value : 0,
         prizeAmount: formData.prizeAmount || 0,
       };
 
@@ -335,11 +373,12 @@ const ChecksRadios = () => {
 
   const handleCheckboxChange = (field) => {
     setFormData((prev) => {
-      const isChecked = !prev[field]; // Get the updated checked state
+      const isChecked = !prev[field];
       return {
         ...prev,
         [field]: isChecked,
-        [`${field}_value`]: isChecked ? prev[`${field}_value`] : "", // Reset if unchecked
+        [`${field}_value`]: isChecked ? prev[`${field}_value`] : "",
+        ...(field === "isTimesSymbol" && !isChecked ? { symbol: "" } : {}),
       };
     });
   };
@@ -385,7 +424,25 @@ const ChecksRadios = () => {
       setFormData(initialFormState);
     }
   }, [modalVisibleadd]);
+  const [backup, setBackup] = useState({
+    betAmount: "",
+    symbol: "",
+  });
+  const [errorsupdate, setErrorsupdate] = useState({});
 
+  const handleNumberChange = (field, value) => {
+    // ✅ Sirf positive numbers allow karega (No leading 0)
+    if (/^([1-9]\d*)?$/.test(value) || value === "") {
+      setMissionData((prev) => ({ ...prev, [field]: value }));
+
+      // ✅ Agar empty hai toh error set karo
+      if (value === "") {
+        setErrorsupdate((prev) => ({ ...prev, [field]: `${field === "prizeAmount" ? "Prize Amount" : "Spin Count"} is required` }));
+      } else {
+        setErrorsupdate((prev) => ({ ...prev, [field]: "" }));
+      }
+    }
+  };
   return (
     <div className="container">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -524,53 +581,123 @@ const ChecksRadios = () => {
               </div>
 
               <div className="modal-body">
-                <form onSubmit={handleFormSubmit}>
-                  <div className="form-group">
-                    <label htmlFor="heading">Heading</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="heading"
-                      value={missionData.heading}
-                      onChange={(e) => setMissionData({ ...missionData, heading: e.target.value })}
+                <form onSubmit={handleFormSubmit} className="space-y-4">
+                  <div className="mb-3">
+                    <CFormCheck
+                      id="isBetAmount"
+                      checked={missionData.isBetAmount}
+                      onChange={() =>
+                        setMissionData((prev) => {
+                          const newChecked = !prev.isBetAmount;
+                          return {
+                            ...prev,
+                            isBetAmount: newChecked,
+                            betAmount: newChecked ? backup.betAmount : "",
+                          };
+                        }) ||
+                        (missionData.isBetAmount &&
+                          setBackup((prev) => ({ ...prev, betAmount: missionData.betAmount })))
+                      }
+                      label="Bet Amount"
                     />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="spinCount">Spin Count</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="spinCount"
-                      value={missionData.spinCount}
-                      onChange={(e) => setMissionData({ ...missionData, spinCount: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="betAmount">Bet Amount</label>
-                    <input
-                      type="text"
-                      className="form-control"
+                    <CFormInput
                       id="betAmount"
-                      value={missionData.betAmount}
-                      onChange={(e) => setMissionData({ ...missionData, betAmount: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="prizeAmount">Prize Amount</label>
-                    <input
                       type="text"
-                      className="form-control"
-                      id="prizeAmount"
-                      value={missionData.prizeAmount}
-                      onChange={(e) => setMissionData({ ...missionData, prizeAmount: e.target.value })}
+                      disabled={!missionData.isBetAmount}
+                      value={missionData.betAmount}
+                      onChange={(e) => {
+                        setMissionData({ ...missionData, betAmount: e.target.value });
+                        setBackup((prev) => ({ ...prev, betAmount: e.target.value }));
+                      }}
                     />
                   </div>
 
+                  <div className="mb-3">
+                    <CFormCheck
+                      id="isTimesSymbol"
+                      checked={missionData.isTimesSymbol}
+                      onChange={() =>
+                        setMissionData((prev) => {
+                          const newChecked = !prev.isTimesSymbol;
+                          return {
+                            ...prev,
+                            isTimesSymbol: newChecked,
+                            symbol: newChecked ? backup.symbol : "",
+                          };
+                        }) ||
+                        (missionData.isTimesSymbol &&
+                          setBackup((prev) => ({ ...prev, symbol: missionData.symbol })))
+                      }
+                      label="Times Symbol"
+                    />
+                    <CFormSelect
+                      id="symbol"
+                      disabled={!missionData.isTimesSymbol}
+                      value={missionData.symbol}
+                      onChange={(e) => {
+                        setMissionData({ ...missionData, symbol: e.target.value });
+                        setBackup((prev) => ({ ...prev, symbol: e.target.value }));
+                      }}
+                    >
+                      <option value="">Select a symbol</option>
+                      <option value="2">Bus</option>
+                      <option value="4">London Eye</option>
+                      <option value="3">Taxi</option>
+                      <option value="5">A</option>
+                      <option value="6">K</option>
+                      <option value="7">Q</option>
+                      <option value="8">J</option>
+                    </CFormSelect>
+                  </div>
+
+
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="prizeAmount">Prize Amount</CFormLabel>
+                    <CFormInput
+                      id="prizeAmount"
+                      type="text"
+                      value={missionData.prizeAmount}
+                      onChange={(e) => handleNumberChange("prizeAmount", e.target.value)}
+                    />
+                    {errorsupdate.prizeAmount && (
+                      <p className="text-danger small mt-1">{errorsupdate.prizeAmount}</p>
+                    )}
+                  </div>
+
+                  {/* Spin Count */}
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="spinCount">Spin Count</CFormLabel>
+                    <CFormInput
+                      id="spinCount"
+                      type="text"
+                      value={missionData.spinCount}
+                      onChange={(e) => handleNumberChange("spinCount", e.target.value)}
+                    />
+                    {errorsupdate.spinCount && (
+                      <p className="text-danger small mt-1">{errorsupdate.spinCount}</p>
+                    )}
+                  </div>
+
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="heading">Mission Name</CFormLabel>
+                    <CFormInput
+                      id="heading"
+                      type="text"
+                      value={missionData.heading || ""}
+                      onChange={(e) => setMissionData({ ...missionData, heading: e.target.value })}
+                    />
+                    {errorsupdate?.heading && (
+                      <p className="text-danger small mt-1">{errorsupdate.heading}</p>
+                    )}
+                  </div>
+
                   <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={() => setModalVisible(false)}>
+                    <CButton type="button" color="secondary" onClick={() => setModalVisible(false)}>
                       Close
-                    </button>
-                    <button type="submit" className="btn btn-primary">Save changes</button>
+                    </CButton>
+                    <CButton type="submit" color="primary" disabled={loading}>
+                      {loading ? "Saving..." : "Save Changes"}
+                    </CButton>
                   </div>
                 </form>
               </div>
@@ -578,6 +705,7 @@ const ChecksRadios = () => {
           </div>
         </div>
       )}
+
 
       {modalVisibleadd && (
         <div className="modal show" style={{ display: 'block' }}>
@@ -591,23 +719,55 @@ const ChecksRadios = () => {
               </div>
               <div className="modal-body">
                 <form onSubmit={handleAddMissionSubmit} className="space-y-4">
-                  {["isBetAmount", "isTimesSymbol"].map((field) => (
-                    <div key={field} className="mb-3">
-                      <CFormCheck
-                        id={field}
-                        checked={formData[field]}
-                        onChange={() => handleCheckboxChange(field)}
-                        label={field.replace("_", " ")}
-                      />
-                      <CFormInput
-                        id={`${field}_value`}
-                        type="text"
-                        disabled={!formData[field]}
-                        value={formData[`${field}_value`] || ""}
-                        onChange={(e) => handleInputChangeNumber(`${field}_value`, e.target.value)}
-                      />
-                    </div>
-                  ))}
+                  <div className="mb-3">
+                    <CFormCheck
+                      id="isBetAmount"
+                      checked={formData.isBetAmount}
+                      onChange={() => handleCheckboxChange("isBetAmount")}
+                      label="Bet Amount"
+                    />
+                    <CFormInput
+                      id="isBetAmount_value"
+                      type="text"
+                      disabled={!formData.isBetAmount}
+                      value={formData.isBetAmount_value || ""}
+                      onChange={(e) => handleInputChangeNumber("isBetAmount_value", e.target.value)}
+                    />
+
+                    {formData.isBetAmount && errors.isBetAmount_value && (
+                      <p className="text-danger small mt-1">{errors.isBetAmount_value}</p>
+                    )}
+
+                  </div>
+
+                  <div className="mb-3">
+                    <CFormCheck
+                      id="isTimesSymbol"
+                      checked={formData.isTimesSymbol}
+                      onChange={() => handleCheckboxChange("isTimesSymbol")}
+                      label="Times Symbol"
+                    />
+                    <CFormSelect
+                      id="symbol"
+                      value={formData.symbol || ""}
+                      onChange={(e) => handleInputChange("symbol", e.target.value)}
+                      disabled={!formData.isTimesSymbol}
+                    >
+                      <option value="">Select a symbol</option>
+                      <option value="2">Bus</option>
+                      <option value="4">London Eye</option>
+                      <option value="3">Taxi</option>
+                      <option value="5">A</option>
+                      <option value="6">K</option>
+                      <option value="7">Q</option>
+                      <option value="8">J</option>
+                    </CFormSelect>
+                    {formData.isTimesSymbol && errors.symbol && (
+                      <p className="text-danger small mt-1">{errors.symbol}</p>
+                    )}
+
+                  </div>
+
 
                   <div className="mb-3">
                     <CFormLabel htmlFor="prizeAmount">Prize Amount</CFormLabel>
@@ -636,27 +796,7 @@ const ChecksRadios = () => {
                       <p className="text-danger small mt-1">{errors.spinCount}</p>
                     )}
                   </div>
-                  <div className="mb-3">
-                    <CFormLabel htmlFor="symbol">Symbol</CFormLabel>
-                    <CFormSelect
-                      id="symbol"
-                      value={formData.symbol || ""}
-                      onChange={(e) => handleInputChange("symbol", e.target.value)}
 
-                    >
-                      <option value="">Select a symbol</option>
-                      <option value="2">Bus</option>
-                      <option value="4">London Eye</option>
-                      <option value="3">Taxi</option>
-                      <option value="5">A</option>
-                      <option value="6">K</option>
-                      <option value="7">Q</option>
-                      <option value="8">J</option>
-                    </CFormSelect>
-                    {errors.symbol && (
-                      <p className="text-danger small mt-1">{errors.symbol}</p>
-                    )}
-                  </div>
 
                   <div className="mb-3">
                     <CFormLabel htmlFor="heading">Mission Name</CFormLabel>
