@@ -8,6 +8,8 @@ import { debounce } from "lodash";
 import { FaEdit, FaTrash } from "react-icons/fa"; // Import the Trash icon for delete
 import DatePicker from "react-datepicker";
 import Swal from 'sweetalert2'
+import { CFormInput, CButton, CFormLabel, CFormCheck, CFormSelect } from "@coreui/react";
+
 
 import "react-datepicker/dist/react-datepicker.css";
 import { port } from "../../../port.js";
@@ -21,6 +23,7 @@ const ChecksRadios = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [missionData, setMissionData] = useState(null);
+
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -31,6 +34,20 @@ const ChecksRadios = () => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [fromDate, toDate] = dateRange;
 
+
+  const initialFormState = {
+    isBetAmount: false,
+    isTimesSymbol: false,
+    isBetAmount_value: "",
+    isTimesSymbol_value: "",
+    prizeAmount: "",
+    betAmount: "",
+    spinCount: "",
+    heading: "",
+    symbol: ""
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -77,17 +94,18 @@ const ChecksRadios = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:7000/add_mission', {
-        heading: missionData.heading,
-        isSpinCount: true,
-        spinCount: missionData.spinCount,
-        isBetAmount: true,
-        betAmount: missionData.betAmount,
-        isTimesSymbol: true,
-        symbol: 4,  // Set the symbol and timesSymbol if required
-        timesSymbol: 4,
-        prizeAmount: missionData.prizeAmount,
-      });
+      const requestData = {
+        heading: formData.heading,
+        spinCount: formData.spinCount || 0,
+        isBetAmount: formData.isBetAmount,
+        betAmount: formData.isBetAmount ? formData.isBetAmount_value : 0,
+        isTimesSymbol: formData.isTimesSymbol,
+        symbol: formData.symbol || 0,
+        timesSymbol: formData.isTimesSymbol ? formData.isTimesSymbol_value : 0,
+        prizeAmount: formData.prizeAmount || 0,
+      };
+
+      const response = await axios.post(`${port}add_mission`, requestData);
 
       if (response.data.status === 200) {
         Swal.fire({
@@ -98,7 +116,7 @@ const ChecksRadios = () => {
           timer: 2000,
         }).then(() => {
           setModalVisibleadd(false);
-          fetchData();  // Refresh the mission list
+          fetchData();  
         });
       } else {
         Swal.fire({
@@ -288,6 +306,41 @@ const ChecksRadios = () => {
     }
   };
 
+  const handleCheckboxChange = (field) => {
+    setFormData((prev) => {
+      const isChecked = !prev[field]; // Get the updated checked state
+      return {
+        ...prev,
+        [field]: isChecked,
+        [`${field}_value`]: isChecked ? prev[`${field}_value`] : "", // Reset if unchecked
+      };
+    });
+  };
+
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+
+  const handleInputChangeNumber = (field, value) => {
+    if (/^\d*$/.test(value)) { // Allow only numbers
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
+  };
+
+
+  useEffect(() => {
+    if (modalVisibleadd) {
+      setFormData(initialFormState);
+    }
+  }, [modalVisibleadd]);
 
   return (
     <div className="container">
@@ -343,7 +396,7 @@ const ChecksRadios = () => {
           </div>
           <button
             className="btn btn-primary"
-            onClick={() => setModalVisibleadd(true)} 
+            onClick={() => setModalVisibleadd(true)}
           >
             Add Mission
           </button>
@@ -471,7 +524,6 @@ const ChecksRadios = () => {
                       onChange={(e) => setMissionData({ ...missionData, prizeAmount: e.target.value })}
                     />
                   </div>
-                  {/* Add other fields as needed */}
 
                   <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" onClick={() => setModalVisible(false)}>
@@ -490,8 +542,6 @@ const ChecksRadios = () => {
         <div className="modal show" style={{ display: 'block' }}>
           <div className="modal-dialog">
             <div className="modal-content">
-           
-
               <div className="modal-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
                 <h5 className="modal-title" style={{ margin: 0 }}>Add New Mission</h5>
                 <button type="button" className="close" onClick={() => setModalVisibleadd(false)} style={{ marginLeft: "auto" }}>
@@ -499,54 +549,76 @@ const ChecksRadios = () => {
                 </button>
               </div>
               <div className="modal-body">
-                <form onSubmit={handleAddMissionSubmit}>
-                  <div className="form-group">
-                    <label htmlFor="heading">Heading</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="heading"
-                      value={missionData?.heading || ''}
-                      onChange={(e) => setMissionData({ ...missionData, heading: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="spinCount">Spin Count</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="spinCount"
-                      value={missionData?.spinCount || ''}
-                      onChange={(e) => setMissionData({ ...missionData, spinCount: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="betAmount">Bet Amount</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="betAmount"
-                      value={missionData?.betAmount || ''}
-                      onChange={(e) => setMissionData({ ...missionData, betAmount: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="prizeAmount">Prize Amount</label>
-                    <input
-                      type="number"
-                      className="form-control"
+                <form onSubmit={handleAddMissionSubmit} className="space-y-4">
+                  {["isBetAmount", "isTimesSymbol"].map((field) => (
+                    <div key={field} className="mb-3">
+                      <CFormCheck
+                        id={field}
+                        checked={formData[field]}
+                        onChange={() => handleCheckboxChange(field)}
+                        label={field.replace("_", " ")}
+                      />
+                      <CFormInput
+                        id={`${field}_value`}
+                        type="text"
+                        disabled={!formData[field]}
+                        value={formData[`${field}_value`] || ""}
+                        onChange={(e) => handleInputChangeNumber(`${field}_value`, e.target.value)}
+                      />
+                    </div>
+                  ))}
+
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="prizeAmount">Prize Amount</CFormLabel>
+                    <CFormInput
                       id="prizeAmount"
-                      value={missionData?.prizeAmount || ''}
-                      onChange={(e) => setMissionData({ ...missionData, prizeAmount: e.target.value })}
+                      type="text"
+                      value={formData.prizeAmount || ""}
+                      onChange={(e) => handleInputChangeNumber("prizeAmount", e.target.value)}
                     />
                   </div>
-                  {/* Add more fields as needed */}
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={() => setModalVisibleadd(false)}>
-                      Close
-                    </button>
-                    <button type="submit" className="btn btn-primary">Save Mission</button>
+
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="prizeAmount">Spin Count</CFormLabel>
+                    <CFormInput
+                      id="spinCount"
+                      type="text"
+                      value={formData.spinCount || ""}
+                      onChange={(e) => handleInputChangeNumber("spinCount", e.target.value)}
+                    />
                   </div>
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="symbol">Symbol</CFormLabel>
+                    <CFormSelect
+                      id="symbol"
+                      value={formData.symbol || ""}
+                      onChange={(e) => handleInputChange("symbol", e.target.value)}
+                    >
+                      <option value="">Select a symbol</option>
+                      <option value="1">Scatter</option>
+                      <option value="2">Bus</option>
+                      <option value="4">London Eye</option>
+                      <option value="3">Taxi</option>
+                      <option value="5">A</option>
+                      <option value="6">K</option>
+                      <option value="7">Q</option>
+                      <option value="8">J</option>
+                    </CFormSelect>
+                  </div>
+
+                  <div className="mb-3">
+                    <CFormLabel htmlFor="heading">Mission Name</CFormLabel>
+                    <CFormInput
+                      id="heading"
+                      type="text"
+                      value={formData.heading || ""}
+                      onChange={(e) => handleInputChange("heading", e.target.value)}
+                    />
+                  </div>
+
+                  <CButton type="submit" color="primary" className="w-full" disabled={loading}>
+                    {loading ? "Submitting..." : "Submit"}
+                  </CButton>
                 </form>
               </div>
             </div>
