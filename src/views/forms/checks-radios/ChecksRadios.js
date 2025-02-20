@@ -10,6 +10,7 @@ import { CFormInput, CButton, CFormLabel, CFormCheck, CFormSelect } from "@coreu
 import "react-datepicker/dist/react-datepicker.css";
 import { port } from "../../../port.js";
 import withReactContent from 'sweetalert2-react-content'
+import { CSpinner } from '@coreui/react'
 const MySwal = withReactContent(Swal)
 const today = new Date();
 
@@ -503,8 +504,9 @@ const ChecksRadios = () => {
       </div>
 
       {loading ? (
-        <p className="text-center">Loading...</p>
-      ) : (
+        <div className="d-flex justify-content-center">
+          <CSpinner color="primary" />
+        </div>      ) : (
         <>
           <table {...getTableProps()} className="table table-bordered">
             <thead className="table-dark">

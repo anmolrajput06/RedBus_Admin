@@ -5,6 +5,7 @@ import withReactContent from 'sweetalert2-react-content'
 import { port } from '../../port.js'
 const MySwal = withReactContent(Swal)
 import { CRow, CCol, CWidgetStatsA } from '@coreui/react'
+import { CSpinner } from '@coreui/react'
 
 const DailyWheel = () => {
   const defaultData = {
@@ -70,7 +71,7 @@ const DailyWheel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-console.log(true,"000000000000");
+    console.log(true, "000000000000");
 
     const formattedData = Object.keys(wheelData).reduce((acc, key) => {
       acc[`value${key}`] = wheelData[key]
@@ -118,12 +119,14 @@ console.log(true,"000000000000");
   const firstHalf = entries.slice(0, half)
   const secondHalf = entries.slice(half)
 
-  if (loading) return <p className="text-center p-4">Loading data...</p>
+  if (loading) return <div className="d-flex justify-content-center">
+    <CSpinner color="primary" />
+  </div>
 
   return (
     <div className="container">
       <div className="p-4 min-h-screen">
-        <form onSubmit={handleSubmit} className="p-4 shadow-md rounded-md" style={{marginTop:"-50px",marginBottom:"10px"}}>
+        <form onSubmit={handleSubmit} className="p-4 shadow-md rounded-md" style={{ marginTop: "-50px", marginBottom: "10px" }}>
           <table className="w-3/4 border-collapse border border-gray-300 mx-auto">
             <thead>
               <tr>
@@ -167,19 +170,19 @@ console.log(true,"000000000000");
               })}
             </tbody>
           </table>
-        
-        <div className="flex justify-center mt-4 ">
-        <div className="d-flex justify-content-center">
-          <button
-            type="submit"
-            style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#6261cc' ,width: '200px', height: '50px', color: 'white', borderRadius: '5px', fontSize: '20px',marginTop:0}}
-            className="form-control"
-          >
-            Update Data
-          </button>
+
+          <div className="flex justify-center mt-4 ">
+            <div className="d-flex justify-content-center">
+              <button
+                type="submit"
+                style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: '#6261cc', width: '200px', height: '50px', color: 'white', borderRadius: '5px', fontSize: '20px', marginTop: 0 }}
+                className="form-control"
+              >
+                Update Data
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
       </div>
     </div>
   )

@@ -9,7 +9,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { port } from "../../../port.js";
 const today = new Date(); // Get today's date
-
+import { CSpinner } from '@coreui/react'
 const Tables = () => {
 
   const [data, setData] = useState([]);
@@ -125,7 +125,7 @@ const Tables = () => {
     setCurrentPage(1); // Reset page to 1 when the date range changes
   };
   return (
-    <div className="container" style={{marginBottom:"65px"}}>
+    <div className="container" style={{ marginBottom: "65px" }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
 
         <div style={{ position: "relative", width: "250px" }}>
@@ -163,10 +163,10 @@ const Tables = () => {
             placeholderText="Select date range"
             onKeyDown={(e) => e.preventDefault()}
             style={{ flex: 1 }}
-            maxDate={today} 
+            maxDate={today}
           />
           <div>
-          <select className="form-select d-inline w-auto" value={itemsPerPage} onChange={handleItemsPerPageChange}>
+            <select className="form-select d-inline w-auto" value={itemsPerPage} onChange={handleItemsPerPageChange}>
 
               <option value="10">10</option>
               <option value="15">15</option>
@@ -179,8 +179,10 @@ const Tables = () => {
       </div>
 
       {loading ? (
-        <p className="text-center">Loading...</p>
-      ) : (
+        <div className="d-flex justify-content-center">
+          <CSpinner color="primary" />
+        </div>
+        ) : (
         <>
           <table {...getTableProps()} className="table table-bordered">
             <thead className="table-dark">

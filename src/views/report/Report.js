@@ -8,6 +8,8 @@ import { FaEye } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { port } from "../../port.js";
+import { CSpinner } from '@coreui/react'
+
 const today = new Date(); // Get today's date
 
 const Tables = () => {
@@ -91,7 +93,7 @@ const Tables = () => {
         accessor: "serial",
         Cell: ({ row }) => (currentPage - 1) * itemsPerPage + row.index + 1
       },
-      {Header:"Name",accessor:"playerName"},
+      { Header: "Name", accessor: "playerName" },
       { Header: "Bet", accessor: "bet" },
       { Header: "Win", accessor: "win" },
       {
@@ -131,7 +133,7 @@ const Tables = () => {
     setCurrentPage(1); // Reset page to 1 when the date range changes
   };
   return (
-    <div className="container" style={{marginBottom:"65px"}}> 
+    <div className="container" style={{ marginBottom: "65px" }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
 
         <div style={{ position: "relative", width: "250px" }}>
@@ -185,8 +187,9 @@ const Tables = () => {
       </div>
 
       {loading ? (
-        <p className="text-center">Loading...</p>
-      ) : (
+        <div className="d-flex justify-content-center">
+      <CSpinner color="primary" />
+        </div>) : (
         <>
           <table {...getTableProps()} className="table table-bordered">
             <thead className="table-dark">
