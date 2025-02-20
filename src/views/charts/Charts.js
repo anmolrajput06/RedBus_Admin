@@ -123,7 +123,7 @@ console.log(true,"000000000000");
   return (
     <div className="container">
       <div className="p-4 min-h-screen">
-        <form onSubmit={handleSubmit} className="p-4 shadow-md rounded-md">
+        <form onSubmit={handleSubmit} className="p-4 shadow-md rounded-md" style={{marginTop:"-50px",marginBottom:"10px"}}>
           <table className="w-3/4 border-collapse border border-gray-300 mx-auto">
             <thead>
               <tr>

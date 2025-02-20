@@ -131,7 +131,7 @@ const Tables = () => {
     setCurrentPage(1); // Reset page to 1 when the date range changes
   };
   return (
-    <div className="container">
+    <div className="container" style={{marginBottom:"65px"}}> 
       <div className="d-flex justify-content-between align-items-center mb-3">
 
         <div style={{ position: "relative", width: "250px" }}>
