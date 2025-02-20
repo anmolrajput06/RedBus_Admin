@@ -44,28 +44,27 @@ const App = () => {
 
   useEffect(() => {
     if (!storedToken || !storedRole) {
-      if(!window.location.href.includes('/#/')) {
-        window.location.href = '/#/login'
-      }
-      if (location.pathname.includes('#/reset') || location.pathname.includes('/reset')) {
-        navigate('/reset')
+      if (location.pathname.includes('reset') || location.hash.includes('#/reset')) {
+        const searchParams = window.location.search;
+        navigate(`/reset${searchParams}`, { replace: true });
       } else {
-        navigate('/login')
+        if (!window.location.href.includes('/#/')) {
+          window.location.href = '/#/login';
+        }
+        navigate('/login');
       }
     } else if (storedToken && storedRole === 'ADMIN') {
-      if (location.pathname == '/') {
-        navigate('/admin/dashboard')
-      }
-      if (location.pathname.includes('login')) {
-        navigate('/admin/dashboard')
+      if (location.pathname === '/' || location.pathname.includes('login')) {
+        navigate('/admin/dashboard');
       }
 
-      if(!window.location.href.includes('/#/')) {
-        window.location.href = '/#/admin/dashboard'
+      if (!window.location.href.includes('/#/')) {
+        window.location.href = '/#/admin/dashboard';
       }
-
     }
-  }, [storedToken, storedRole, location.pathname])
+  }, [storedToken, storedRole, location.pathname]);
+
+
 
   return (
     <Suspense
