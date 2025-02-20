@@ -78,7 +78,6 @@ const ChecksRadios = () => {
       return;
     }
     try {
-      console.log(missionData, "missionData");
       const response = await axios.post(`${port}update_mission_data`, {
         missionid: missionData.id,
         heading: missionData.heading,
@@ -90,7 +89,6 @@ const ChecksRadios = () => {
         isTimesSymbol: missionData.isTimesSymbol
 
       });
-      console.log(response.data.status == 200, "response.data");
 
       if (response.data.status == 200) {
 
@@ -361,7 +359,6 @@ const ChecksRadios = () => {
       const response = await axios.post(`${port}get_mission_data`, {
         id: rowData.id,
       });
-      console.log(response.data, "response.data");
 
       setMissionData(response.data.missionData);
       setModalVisible(true);
@@ -510,10 +507,10 @@ const ChecksRadios = () => {
         <>
           <table {...getTableProps()} className="table table-bordered">
             <thead className="table-dark">
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+              {headerGroups.map((headerGroup,index) => (
+                <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id || index}>
                   {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()} key={column.id}>
+                    <th {...column.getHeaderProps()} key={column.id || index}>
                       {column.render("Header")}
                     </th>
                   ))}

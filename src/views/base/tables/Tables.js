@@ -44,7 +44,6 @@ const Tables = () => {
         toDate,
       });
 
-      // console.log(response.data.pagination.total, "----------");
 
       // setData(response.data.data || []);
       // setTotalCount(response.data.pagination.total);
@@ -186,10 +185,10 @@ const Tables = () => {
         <>
           <table {...getTableProps()} className="table table-bordered">
             <thead className="table-dark">
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+              {headerGroups.map((headerGroup , index) => (
+                <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id ||index}>
                   {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()} key={column.id}>{column.render("Header")}</th>
+                    <th {...column.getHeaderProps()} key={column.id ||index} >{column.render("Header")}</th>
                   ))}
                 </tr>
               ))}

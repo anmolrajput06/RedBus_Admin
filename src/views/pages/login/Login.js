@@ -24,7 +24,6 @@ import axios from "axios";
 import withReactContent from 'sweetalert2-react-content'
 import { Eye, EyeOff } from "lucide-react";
 import { port } from "../../../port.js";
-console.log(port, "port000000000000");
 
 const MySwal = withReactContent(Swal)
 

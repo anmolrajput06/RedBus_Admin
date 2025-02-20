@@ -71,7 +71,6 @@ const DailyWheel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(true, "000000000000");
 
     const formattedData = Object.keys(wheelData).reduce((acc, key) => {
       acc[`value${key}`] = wheelData[key]

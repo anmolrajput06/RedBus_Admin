@@ -3,7 +3,6 @@ import Switch from "react-switch";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { port } from "../../../port.js";
-console.log(port, "port000000000000");
 import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
@@ -15,8 +14,6 @@ const StatusToggle = ({ rowId, initialStatus }) => {
     try {
       const newStatus = nextChecked ? "active" : "inactive";
 
-      // ✅ API Call to Update Status
-      console.log(rowId, "rowId");
 
       const response = await axios.post(`${port}update_status`, {
         userId: rowId,
