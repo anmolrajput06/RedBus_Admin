@@ -36,6 +36,8 @@ const Tables = () => {
     setLoading(true);
     try {
       const response = await axios.post(`${port}customer_list`, {
+        // const response = await axios.get(`https://jsonplaceholder.typicode.com/todos`, {
+
 
         limit: itemsPerPage,
         page: currentPage,
@@ -44,7 +46,7 @@ const Tables = () => {
         toDate,
       });
 
-      // console.log(response.data.pagination.total, "----------");
+      console.log(response.data, "----------");
 
       // setData(response.data.data || []);
       // setTotalCount(response.data.pagination.total);
@@ -182,37 +184,64 @@ const Tables = () => {
         <p className="text-center">Loading...</p>
       ) : (
         <>
-          <table {...getTableProps()} className="table table-bordered">
-            <thead className="table-dark">
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                  {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()} key={column.id}>{column.render("Header")}</th>
-                  ))}
-                </tr>
+      
+
+
+
+        <div style={{ height: "500px", overflowY: "auto", border: "1px solid #ddd" }}>
+  <table {...getTableProps()} className="table table-bordered" style={{ width: "100%", borderCollapse: "collapse" }}>
+    <thead className="table-dark" style={{ position: "sticky", top: "0", zIndex: "2" }}>
+      {headerGroups.map((headerGroup) => (
+        <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+          {headerGroup.headers.map((column) => (
+            <th 
+              {...column.getHeaderProps()} 
+              key={column.id} 
+              style={{ padding: "10px", textAlign: "left", color: "#fff", background: "#343a40" }}
+            >
+              {column.render("Header")}
+            </th>
+          ))}
+        </tr>
+      ))}
+    </thead>
+    <tbody {...getTableBodyProps()}>
+      {rows.length > 0 ? (
+        rows.map((row) => {
+          prepareRow(row);
+          return (
+            <tr {...row.getRowProps()} key={row.id}>
+              {row.cells.map((cell) => (
+                <td 
+                  {...cell.getCellProps()} 
+                  key={cell.column.id} 
+                  style={{ padding: "8px", borderBottom: "1px solid #ddd" }}
+                >
+                  {cell.render("Cell")}
+                </td>
               ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {rows.length > 0 ? (
-                rows.map((row) => {
-                  prepareRow(row);
-                  return (
-                    <tr {...row.getRowProps()} key={row.id}>
-                      {row.cells.map((cell) => (
-                        <td {...cell.getCellProps()} key={cell.column.id}>{cell.render("Cell")}</td>
-                      ))}
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={columns.length} className="text-center">
-                    No results found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+            </tr>
+          );
+        })
+      ) : (
+        <tr>
+          <td colSpan={columns.length} className="text-center" style={{ padding: "15px" }}>
+            No results found
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+
+
+
 
           {totalPages > 1 && (
             <div className="position-relative mt-3">
