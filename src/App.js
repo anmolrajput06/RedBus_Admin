@@ -79,6 +79,8 @@ const App = () => {
         <Route path="/login" name="Login Page" element={<Login />} />
         <Route path="/register" name="Register Page" element={<Register />} />
         <Route path="/reset" name="Forgate Password Page" element={<ForgatePassword />} />
+        <Route path="/reset/:id" name="Forgate Password Page" element={<ForgatePassword />} />
+
         <Route path="/" name="Login Page" element={<Login />} />
         <Route path="/500" name="Page 500" element={<Page500 />} />
         <Route path="/admin/*" element={storedRole === 'ADMIN' ? <DefaultLayout /> : <Login />} />
