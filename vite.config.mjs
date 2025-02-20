@@ -46,7 +46,9 @@ export default defineConfig(() => {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.scss'],
     },
     server: {
+      allowedHosts: ["433c-182-64-130-102.ngrok-free.app"], // Add your Ngrok domain here
       host: '0.0.0.0',
+
       port: 3000,
       proxy: {
         

@@ -35,7 +35,7 @@ const Tables = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${port}customer_list`, {
+      const response = await axios.post(`${port}listing_for_report`, {
 
         limit: itemsPerPage,
         page: currentPage,
@@ -50,10 +50,11 @@ const Tables = () => {
       // setTotalCount(response.data.pagination.total);
       // setTotalPages(Math.ceil(response.data.pagination.total / itemsPerPage));
 
+      console.log(response.data);
 
-      setData(response.data.cusromer || []);
-      setTotalCount(response.data.customer_count);
-      setTotalPages(Math.ceil(response.data.customer_count / itemsPerPage));
+      setData(response.data.report || []);
+      setTotalCount(response.data.report_count);
+      setTotalPages(Math.ceil(response.data.report_count / itemsPerPage));
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -90,9 +91,14 @@ const Tables = () => {
         accessor: "serial",
         Cell: ({ row }) => (currentPage - 1) * itemsPerPage + row.index + 1
       },
-      { Header: "Name", accessor: "name" },
-      { Header: "Email", accessor: "email" },
-      { Header: "Balance", accessor: "balance" },
+      {Header:"Name",accessor:"playerName"},
+      { Header: "Bet", accessor: "bet" },
+      { Header: "Win", accessor: "win" },
+      {
+        Header: "P/L",
+        accessor: "balance",
+        Cell: ({ row }) => row.original.bet - row.original.win
+      }, { Header: "Type", accessor: "betType" },
       {
         Header: "Created At",
         accessor: "createdAt",
@@ -105,13 +111,13 @@ const Tables = () => {
           }).replace(",", "");
         },
       },
-      {
-        Header: "Status",
-        accessor: "status",
-        Cell: ({ row }) => (
-          <StatusToggle rowId={row.original.id} initialStatus={row.original.status} />
-        )
-      }
+      // {
+      //   Header: "Status",
+      //   accessor: "status",
+      //   Cell: ({ row }) => (
+      //     <StatusToggle rowId={row.original.id} initialStatus={row.original.status} />
+      //   )
+      // }
     ],
     [currentPage, itemsPerPage]
   );

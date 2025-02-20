@@ -59,12 +59,12 @@ const _nav = [
     to: '/admin/mission',
     icon: <SiTransmission className="nav-icon" />,
   },
-  {
-    component: CNavItem,
-    name: 'Notification',
-    to: '/admin/notification',
-    icon: <IoNotificationsSharp className="nav-icon" />,
-  }
+  // {
+  //   component: CNavItem,
+  //   name: 'Notification',
+  //   to: '/admin/notification',
+  //   icon: <IoNotificationsSharp className="nav-icon" />,
+  // }
 ];
 
 export default _nav
