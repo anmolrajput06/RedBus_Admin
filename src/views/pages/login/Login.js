@@ -22,7 +22,7 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import Swal from 'sweetalert2'
 import axios from "axios";
 import withReactContent from 'sweetalert2-react-content'
-import { Eye, EyeOff } from "lucide-react"; 
+import { Eye, EyeOff } from "lucide-react";
 import { port } from "../../../port.js";
 console.log(port, "port000000000000");
 
@@ -174,19 +174,20 @@ const Login = () => {
                       </CInputGroupText>
                     </CInputGroup>
                     <CRow>
-                      <CCol xs={4}>
-                        <CButton color="primary" className="px-4" type="submit">
-                          Login
-                        </CButton>
-                      </CCol>
                       <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-1" onClick={() => {
                           setVisible(true);
-                          setSuccessMsg(''); // ✅ Reset success message when modal opens
+                          setSuccessMsg('');
                         }}>
                           Forgot password?
                         </CButton>
                       </CCol>
+                      <CCol xs={12} className="text-center">
+                        <CButton color="primary" className="px-4" type="submit">
+                          Login
+                        </CButton>
+                      </CCol>
+
                     </CRow>
                   </CForm>
                 </CCardBody>
