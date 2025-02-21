@@ -170,7 +170,11 @@ const DailyWheel = () => {
             </tbody>
           </table>
 
-          <div className="flex justify-center mt-4 ">
+          <div className="flex justify-center mt-4 row">
+            <div className="ml-4 font-semibold" style={{ marginLeft: "185px", paddingBottom: "10px" }}>
+              Note: Select value 0 for setting "GOOD LUCK" value
+            </div>
+
             <div className="d-flex justify-content-center">
               <button
                 type="submit"
@@ -181,8 +185,11 @@ const DailyWheel = () => {
               </button>
             </div>
           </div>
+
         </form>
+
       </div>
+
     </div>
   )
 }
