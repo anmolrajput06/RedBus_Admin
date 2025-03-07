@@ -90,7 +90,6 @@ const Tables = () => {
         amount,
         type,
       });
-      console.log(response, "00000000000000000000000");
 
       if (response.data.status == "success") {
         // Success alert
