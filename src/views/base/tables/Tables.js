@@ -196,8 +196,8 @@ const Tables = () => {
                 // color: "#6261cc",
               }}
             >
-              <BiSolidDollarCircle 
-              size={25} />
+              <BiSolidDollarCircle
+                size={25} />
             </button>
           </div>
         ),
@@ -353,11 +353,12 @@ const Tables = () => {
               value={amount}
               onChange={(e) => {
                 const value = e.target.value;
-                if (/^\d*$/.test(value)) {
-                  setAmount(value); // Sirf positive numbers allow honge
+                if (/^\d*\.?\d*$/.test(value)) {
+                  setAmount(value);
                 }
               }}
             />
+
 
           </Form.Group>
         </Modal.Body>
