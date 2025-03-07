@@ -49,9 +49,12 @@ const StatusToggle = ({ rowId, initialStatus }) => {
         offColor="#D1D5DB"
         uncheckedIcon={false}
         checkedIcon={false}
+        height={22}  
+        width={38}   
       />
     </div>
   );
+  
 };
 
 export default StatusToggle;

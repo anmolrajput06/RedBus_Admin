@@ -6,16 +6,23 @@ import StatusToggle from "./Toggle";
 import { X } from "lucide-react";
 import { FaEye } from "react-icons/fa";
 import DatePicker from "react-datepicker";
+import { BiSolidReport, BiSolidPencil } from "react-icons/bi";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { Modal, Button, Form } from "react-bootstrap";
+import Swal from "sweetalert2";
 import "react-datepicker/dist/react-datepicker.css";
 import { port } from "../../../port.js";
 const today = new Date(); // Get today's date
 import { CSpinner } from '@coreui/react'
 const Tables = () => {
+  const navigate = useNavigate();
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [amount, setAmount] = useState("");
 
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -27,9 +34,9 @@ const Tables = () => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [fromDate, toDate] = dateRange;
 
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
   const handleViewDetails = (id) => {
-    setCustomerId(id);
-    setModalVisible(true);
+    navigate(`/admin/userreport/${id}`); // Navigate to the new page with id
   };
 
   const fetchData = async () => {
@@ -60,6 +67,62 @@ const Tables = () => {
     }
   }
 
+  useEffect(() => {
+    if (!modalVisible) {
+      setAmount("");
+    }
+  }, [modalVisible]);
+  const handleEdit = (customer) => {
+    setSelectedCustomer(customer);
+    setModalVisible(true);
+  };
+
+
+  const handleBalanceUpdate = async (type) => {
+    if (!selectedCustomer || !amount) {
+      alert("Please enter a valid amount.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${port}update_balance`, {
+        userid: selectedCustomer,
+        amount,
+        type,
+      });
+      console.log(response, "00000000000000000000000");
+
+      if (response.data.status == "success") {
+        // Success alert
+        Swal.fire({
+          title: "Success!",
+          text: `Balance ${type} successful.`,
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+
+        fetchData();
+        setModalVisible(false);
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: response.data.msg,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating balance:", error);
+
+      // Error alert
+      Swal.fire({
+        title: "Error!",
+        text: "Something went wrong. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
   useEffect(() => {
     fetchData();
   }, [currentPage, itemsPerPage, fromDate, toDate]);
@@ -108,9 +171,39 @@ const Tables = () => {
         Header: "Status",
         accessor: "status",
         Cell: ({ row }) => (
-          <StatusToggle rowId={row.original.id} initialStatus={row.original.status} />
+          <StatusToggle rowId={row.original.id} initialStatus={row.original.status}
+
+          />
+
         )
+      },
+      {
+        Header: "Action",
+        Cell: ({ row }) => (
+          <div style={{ display: "flex", gap: "10px" }}>
+            <BiSolidReport
+              onClick={() => handleViewDetails(row.original.id)}
+              style={{ fontSize: "25px", cursor: "pointer" }}
+              title="View Report"
+            />
+            <button
+              onClick={() => handleEdit(row.original.id)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "#6261cc",
+              }}
+            >
+              <FaEdit size={19} />
+            </button>
+          </div>
+        ),
       }
+
+
+
+
     ],
     [currentPage, itemsPerPage]
   );
@@ -181,14 +274,14 @@ const Tables = () => {
         <div className="d-flex justify-content-center">
           <CSpinner color="primary" />
         </div>
-        ) : (
+      ) : (
         <>
           <table {...getTableProps()} className="table table-bordered">
             <thead className="table-dark">
-              {headerGroups.map((headerGroup , index) => (
-                <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id ||index}>
+              {headerGroups.map((headerGroup, index) => (
+                <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id || index}>
                   {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()} key={column.id ||index} >{column.render("Header")}</th>
+                    <th {...column.getHeaderProps()} key={column.id || index} >{column.render("Header")}</th>
                   ))}
                 </tr>
               ))}
@@ -245,6 +338,39 @@ const Tables = () => {
           )}
         </>
       )}
+
+      <Modal show={modalVisible} onHide={() => setModalVisible(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>top up / redeem</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Balance</Form.Label>
+            <Form.Control
+              type="text"
+              value={amount}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  setAmount(value); // Sirf positive numbers allow honge
+                }
+              }}
+            />
+
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setModalVisible(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={() => handleBalanceUpdate("top up")}>
+            Top Up
+          </Button>
+          <Button variant="primary" onClick={() => handleBalanceUpdate("redeem")}>
+            Redeem
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

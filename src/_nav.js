@@ -22,6 +22,7 @@ import { TbMessageReportFilled } from "react-icons/tb";
 import { IoNotificationsSharp } from "react-icons/io5";
 import { SiTransmission } from "react-icons/si";
 
+import { BiSolidReport } from "react-icons/bi";
 
 const _nav = [
   {
@@ -51,7 +52,7 @@ const _nav = [
     component: CNavItem,
     name: 'Report',
     to: '/admin/report',
-    icon: <TbMessageReportFilled className="nav-icon" />,
+    icon: <BiSolidReport className="nav-icon" />,
   },
   {
     component: CNavItem,

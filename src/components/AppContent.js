@@ -6,6 +6,8 @@ import { CContainer, CSpinner } from '@coreui/react'
 const Dashboard = React.lazy(() => import('../views/dashboard/Dashboard'))
 const Tables = React.lazy(() => import('../views/base/tables/Tables'))
 const Report = React.lazy(() => import('../views/report/Report'))
+const UserReport = React.lazy(() => import('../views/report/UserReport'))
+
 const Charts = React.lazy(() => import('../views/charts/Charts'))
 const ChecksRadios = React.lazy(()=>import('../views/forms/checks-radios/ChecksRadios'))
 
@@ -19,7 +21,8 @@ const AppContent = () => {
           <Route path="dailywheel" element={<Charts />} />
           <Route path="report" element={<Report />} />
           <Route path='mission' element={<ChecksRadios />} />
-        </Routes>
+          <Route path="userreport/:id" element={<UserReport />} />
+          </Routes>
       </Suspense>
     </CContainer>
   )
