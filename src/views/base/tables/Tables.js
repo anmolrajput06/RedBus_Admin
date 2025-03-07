@@ -7,6 +7,8 @@ import { X } from "lucide-react";
 import { FaEye } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import { BiSolidReport, BiSolidPencil } from "react-icons/bi";
+import { BiSolidDollarCircle } from "react-icons/bi";
+
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button, Form } from "react-bootstrap";
@@ -191,10 +193,11 @@ const Tables = () => {
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                color: "#6261cc",
+                // color: "#6261cc",
               }}
             >
-              <FaEdit size={19} />
+              <BiSolidDollarCircle 
+              size={25} />
             </button>
           </div>
         ),
