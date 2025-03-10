@@ -353,14 +353,13 @@ const Tables = () => {
               value={amount}
               onChange={(e) => {
                 const value = e.target.value;
-                if (/^\d*\.?\d*$/.test(value)) {
+                if (/^\d*\.?\d*$/.test(value) && value.length <= 10) {
                   setAmount(value);
                 }
               }}
             />
-
-
           </Form.Group>
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setModalVisible(false)}>
