@@ -214,6 +214,7 @@ const Tables = () => {
     columns,
     data,
   });
+  
   const handleDateChange = (update) => {
     setDateRange(update);
     setCurrentPage(1); // Reset page to 1 when the date range changes
