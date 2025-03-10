@@ -155,7 +155,13 @@ const Tables = () => {
       },
       { Header: "Name", accessor: "name" },
       { Header: "Email", accessor: "email" },
-      { Header: "Balance", accessor: "balance" },
+      { 
+        Header: "Balance", 
+        accessor: "balance",
+        Cell: ({ value }) => (Math.floor(value * 100) / 100).toFixed(2)
+      }
+      
+      ,
       {
         Header: "Created At",
         accessor: "createdAt",
@@ -214,7 +220,7 @@ const Tables = () => {
     columns,
     data,
   });
-  
+
   const handleDateChange = (update) => {
     setDateRange(update);
     setCurrentPage(1); // Reset page to 1 when the date range changes
