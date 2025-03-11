@@ -24,12 +24,7 @@ const BetAmount = () => {
 
     const [missionData, setMissionData] = useState({
         BetAmount: "",
-        spinCount: "",
-        isBetAmount: false,
-        isTimesSymbol: false,
-        BetAmount: "",
-        betAmount: "",
-        symbol: ""
+
     });
     const [totalCount, setTotalCount] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -88,15 +83,9 @@ const BetAmount = () => {
     };
 
     const initialFormState = {
-        isBetAmount: false,
-        isTimesSymbol: false,
-        isBetAmount_value: "",
-        isTimesSymbol_value: "",
+
         BetAmount: "",
-        betAmount: "",
-        spinCount: "",
-        BetAmount: "",
-        symbol: ""
+
     };
     const [formData, setFormData] = useState(initialFormState);
 
@@ -303,11 +292,7 @@ const BetAmount = () => {
     const handleOpenModal = () => {
         setFormData({
             BetAmount: "",
-            spinCount: "",
-            BetAmount: "",
-            symbol: "",
-            isBetAmount: false,
-            isTimesSymbol: false,
+          
         });
 
         setErrors({});
