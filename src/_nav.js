@@ -60,6 +60,12 @@ const _nav = [
     to: '/admin/mission',
     icon: <SiTransmission className="nav-icon" />,
   },
+  {
+    component: CNavItem,
+    name: 'Bet Amount',
+    to: '/admin/betamount',
+    icon: <SiTransmission className="nav-icon" />,
+  }
   // {
   //   component: CNavItem,
   //   name: 'Notification',

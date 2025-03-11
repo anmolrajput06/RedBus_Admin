@@ -9,6 +9,8 @@ const UserReport = React.lazy(() => import('./views/report/UserReport'))
 const Charts = React.lazy(() => import('./views/charts/Charts'))
 const ChecksRadios = React.lazy(() => import('./views/forms/checks-radios/ChecksRadios'))
 
+const BetAmount = React.lazy(() => import('./views/forms/checks-radios/BetAmount'))
+
 const routes = [
 
   { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard },
@@ -18,7 +20,10 @@ const routes = [
   { path: '/admin/userreport/:id', name: 'User Report', element: UserReport },
 
   { path: '/admin/notification', name: 'Notification', element: Report },
-  { path: '/admin/mission', name: 'Mission', element: ChecksRadios }
+  { path: '/admin/mission', name: 'Mission', element: ChecksRadios },
+  {
+    path: '/admin/betamount', name: ' Bet Amount', element: BetAmount
+  }
 
 
 

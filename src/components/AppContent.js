@@ -10,6 +10,8 @@ const UserReport = React.lazy(() => import('../views/report/UserReport'))
 
 const Charts = React.lazy(() => import('../views/charts/Charts'))
 const ChecksRadios = React.lazy(() => import('../views/forms/checks-radios/ChecksRadios'))
+const BetAmount = React.lazy(() => import('../views/forms/checks-radios/BetAmount'))
+
 
 const AppContent = () => {
   return (
@@ -21,6 +23,8 @@ const AppContent = () => {
           <Route path="dailywheel" element={<Charts />} />
           <Route path="report" element={<Report />} />
           <Route path='mission' element={<ChecksRadios />} />
+          <Route path='betamount' element={<BetAmount />} />
+
           <Route path="userreport/:id" element={<UserReport />} />
         </Routes>
       </Suspense>
