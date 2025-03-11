@@ -14,6 +14,9 @@ import {
   cilSpeedometer,
   cilStar,
 } from '@coreui/icons'
+
+import { GiTwoCoins } from "react-icons/gi";
+
 import { RiDashboardFill } from "react-icons/ri";
 import { FaUsers } from "react-icons/fa";
 import { FaGift } from "react-icons/fa6";
@@ -64,7 +67,7 @@ const _nav = [
     component: CNavItem,
     name: 'Bet Amount',
     to: '/admin/betamount',
-    icon: <SiTransmission className="nav-icon" />,
+    icon: <GiTwoCoins className="nav-icon" />,
   }
   // {
   //   component: CNavItem,

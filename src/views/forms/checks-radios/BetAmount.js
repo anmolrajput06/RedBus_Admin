@@ -23,11 +23,11 @@ const BetAmount = () => {
     const [searchTerm, setSearchTerm] = useState("");
 
     const [missionData, setMissionData] = useState({
-        prizeAmount: "",
+        BetAmount: "",
         spinCount: "",
         isBetAmount: false,
         isTimesSymbol: false,
-        heading: "",
+        BetAmount: "",
         betAmount: "",
         symbol: ""
     });
@@ -41,15 +41,50 @@ const BetAmount = () => {
     const [errors, setErrors] = useState({});
 
 
+
+
+    const handleInputChangeNumber = (field, value) => {
+        if (!/^\d*\.?\d*$/.test(value)) return;
+
+        if (value.length > 10) return;
+
+        let floatValue = parseFloat(value);
+
+        if (floatValue === 0) {
+            setErrors((prev) => ({
+                ...prev,
+                [field]: "Bet amount must be greater than 0",
+            }));
+        } else {
+            setErrors((prev) => ({
+                ...prev,
+                [field]: "",
+            }));
+        }
+
+        // Restrict to 2 decimal places
+        if (value.includes(".")) {
+            let [integerPart, decimalPart] = value.split(".");
+            decimalPart = decimalPart.slice(0, 2); // Allow only 2 decimal places
+            value = `${integerPart}.${decimalPart}`;
+        }
+
+        // Update state
+        setFormData((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+    };
+
     const initialFormState = {
         isBetAmount: false,
         isTimesSymbol: false,
         isBetAmount_value: "",
         isTimesSymbol_value: "",
-        prizeAmount: "",
+        BetAmount: "",
         betAmount: "",
         spinCount: "",
-        heading: "",
+        BetAmount: "",
         symbol: ""
     };
     const [formData, setFormData] = useState(initialFormState);
@@ -62,8 +97,8 @@ const BetAmount = () => {
         let newErrors = {};
 
 
-        if (!missionData.prizeAmount) {
-            newErrors.prizeAmount = "Bet Amount Amount is required";
+        if (!missionData.BetAmount) {
+            newErrors.BetAmount = "Bet Amount Amount is required";
         }
 
 
@@ -72,15 +107,10 @@ const BetAmount = () => {
             return;
         }
         try {
-            const response = await axios.post(`${port}update_mission_data`, {
+            const response = await axios.post(`${port}update_bet_amount_data`, {
                 missionid: missionData.id,
-                heading: missionData.heading,
-                spinCount: missionData.spinCount,
-                betAmount: missionData.betAmount || 0,
-                prizeAmount: missionData.prizeAmount,
-                isBetAmount: missionData.isBetAmount,
-                symbol: missionData.symbol || 0,
-                isTimesSymbol: missionData.isTimesSymbol
+                BetAmount: missionData.BetAmount,
+
 
             });
 
@@ -119,8 +149,8 @@ const BetAmount = () => {
             let newErrors = {};
 
 
-            if (!formData.prizeAmount) {
-                newErrors.prizeAmount = "Bet Amount is required";
+            if (!formData.BetAmount) {
+                newErrors.BetAmount = "Bet Amount is required";
             }
 
             if (Object.keys(newErrors).length > 0) {
@@ -128,16 +158,11 @@ const BetAmount = () => {
                 return;
             }
             const requestData = {
-                heading: formData.heading,
-                spinCount: formData.spinCount || 0,
-                isBetAmount: formData.isBetAmount,
-                betAmount: formData.isBetAmount ? formData.isBetAmount_value : 0,
-                isTimesSymbol: formData.isTimesSymbol,
-                symbol: formData.symbol || 0,
-                prizeAmount: formData.prizeAmount || 0,
+                BetAmount: formData.BetAmount,
+
             };
 
-            const response = await axios.post(`${port}add_mission`, requestData);
+            const response = await axios.post(`${port}add_bet_amount`, requestData);
 
             if (response.data.status === 200) {
                 Swal.fire({
@@ -168,7 +193,7 @@ const BetAmount = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await axios.post(`${port}get_mission_list`, {
+            const response = await axios.post(`${port}get_bet_amount_list`, {
                 limit: itemsPerPage,
                 page: currentPage,
                 globlesearch: searchTerm,
@@ -222,7 +247,7 @@ const BetAmount = () => {
 
         if (result.isConfirmed) {
             try {
-                const response = await axios.post(`${port}delete_mission_data`, {
+                const response = await axios.post(`${port}delete_bet_amount_data`, {
                     missionid: missionid,
                 });
 
@@ -253,9 +278,9 @@ const BetAmount = () => {
 
     const handleOpenModal = () => {
         setFormData({
-            prizeAmount: "",
+            BetAmount: "",
             spinCount: "",
-            heading: "",
+            BetAmount: "",
             symbol: "",
             isBetAmount: false,
             isTimesSymbol: false,
@@ -265,6 +290,64 @@ const BetAmount = () => {
         setModalVisibleadd(true);
     };
 
+    // const columns = React.useMemo(
+    //     () => [
+    //         {
+    //             Header: "S.No",
+    //             accessor: "serial",
+    //             Cell: ({ row }) => (currentPage - 1) * itemsPerPage + row.index + 1
+    //         },
+    //         { Header: "Bet Amount", accessor: "BetAmount" },
+    //         {
+    //             Header: "Created At",
+    //             accessor: "createdAt",
+    //             Cell: ({ value }) => {
+    //                 const date = new Date(value);
+    //                 return date.toLocaleDateString("en-GB", {
+    //                     day: "2-digit",
+    //                     month: "short",
+    //                     year: "2-digit",
+    //                 }).replace(",", "");
+    //             },
+    //         },
+    //         {
+    //             Header: "Action",
+    //             accessor: "action",
+    //             Cell: ({ row }) => (
+    //                 <div style={{ display: 'flex', gap: '10px' }}>
+    //                     {/* Edit button */}
+    //                     <button
+    //                         onClick={() => handleEdit(row.original)}
+    //                         style={{
+    //                             background: "none",
+    //                             border: "none",
+    //                             cursor: "pointer",
+    //                             color: "#6261cc",
+    //                         }}
+    //                     >
+    //                         <FaEdit size={18} />
+    //                     </button>
+
+    //                     {/* Delete button */}
+    //                     <button
+    //                         onClick={() => handleDelete(row.original.id)} // Call delete function
+    //                         style={{
+    //                             background: "none",
+    //                             border: "none",
+    //                             cursor: "pointer",
+    //                             color: "#6261cc",
+    //                         }}
+    //                     >
+    //                         <FaTrash size={18} />
+    //                     </button>
+    //                 </div>
+    //             ),
+    //         },
+    //     ],
+    //     [currentPage, itemsPerPage]
+    // );
+
+
     const columns = React.useMemo(
         () => [
             {
@@ -272,7 +355,7 @@ const BetAmount = () => {
                 accessor: "serial",
                 Cell: ({ row }) => (currentPage - 1) * itemsPerPage + row.index + 1
             },
-            { Header: "Bet Amount", accessor: "betAmount" },
+            { Header: "Bet Amount", accessor: "BetAmount" },
             {
                 Header: "Created At",
                 accessor: "createdAt",
@@ -288,9 +371,8 @@ const BetAmount = () => {
             {
                 Header: "Action",
                 accessor: "action",
-                Cell: ({ row }) => (
+                Cell: ({ row, data }) => (
                     <div style={{ display: 'flex', gap: '10px' }}>
-                        {/* Edit button */}
                         <button
                             onClick={() => handleEdit(row.original)}
                             style={{
@@ -303,18 +385,19 @@ const BetAmount = () => {
                             <FaEdit size={18} />
                         </button>
 
-                        {/* Delete button */}
-                        <button
-                            onClick={() => handleDelete(row.original.id)} // Call delete function
-                            style={{
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                color: "#6261cc",
-                            }}
-                        >
-                            <FaTrash size={18} />
-                        </button>
+                        {data.length > 2 && (
+                            <button
+                                onClick={() => handleDelete(row.original.id)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    color: "#6261cc",
+                                }}
+                            >
+                                <FaTrash size={18} />
+                            </button>
+                        )}
                     </div>
                 ),
             },
@@ -335,7 +418,7 @@ const BetAmount = () => {
     const handleEdit = async (rowData) => {
         setLoading(true);
         try {
-            const response = await axios.post(`${port}get_mission_data`, {
+            const response = await axios.post(`${port}get_bet_amount_data`, {
                 id: rowData.id,
             });
 
@@ -372,26 +455,11 @@ const BetAmount = () => {
         }));
     };
 
-    const handleInputChangeNumber = (field, value) => {
-        if (/^\d*\.?\d*$/.test(value)) {
-            setFormData((prev) => ({
-                ...prev,
-                [field]: value,
-            }));
 
-            setErrors((prev) => ({
-                ...prev,
-                [field]: value === "" ? `${getFieldLabel(field)} is required` : "",
-            }));
-        }
-    };
 
     const getFieldLabel = (field) => {
         const labels = {
-            prizeAmount: "Prize Amount",
-            spinCount: "Spin Count",
-            heading: "Mission Name",
-            symbol: "Symbol",
+            BetAmount: "Bet Amount",
         };
         return labels[field] || "This field";
     };
@@ -401,24 +469,46 @@ const BetAmount = () => {
             setFormData(initialFormState);
         }
     }, [modalVisibleadd]);
-    const [backup, setBackup] = useState({
-        betAmount: "",
-        symbol: "",
-    });
+
     const [errorsupdate, setErrorsupdate] = useState({});
 
+
+
     const handleNumberChange = (field, value) => {
+        if (!/^\d*\.?\d*$/.test(value)) return;
 
-        if (/^\d*\.?\d*$/.test(value) || value === "") {
-            setMissionData((prev) => ({ ...prev, [field]: value }));
+        if (value.length > 10) return;
 
-            if (value === "") {
-                setErrorsupdate((prev) => ({ ...prev, [field]: `${field === "prizeAmount" ? "Prize Amount" : "Spin Count"} is required` }));
-            } else {
-                setErrorsupdate((prev) => ({ ...prev, [field]: "" }));
-            }
+        let floatValue = parseFloat(value);
+
+        if (floatValue === 0) {
+            setErrorsupdate((prev) => ({
+                ...prev,
+                [field]: "Bet amount must be greater than 0",
+            }));
+        } else {
+            setErrorsupdate((prev) => ({
+                ...prev,
+                [field]: "",
+            }));
+        }
+
+        if (value.includes(".")) {
+            let [integerPart, decimalPart] = value.split(".");
+            decimalPart = decimalPart.slice(0, 2);
+            value = `${integerPart}.${decimalPart}`;
+        }
+
+        setMissionData((prev) => ({ ...prev, [field]: value }));
+
+        if (value === "") {
+            setErrorsupdate((prev) => ({
+                ...prev,
+                [field]: `${field === "BetAmount" ? "Bet Amount" : "Spin Count"} is required`,
+            }));
         }
     };
+
     return (
         <div className="container" style={{ marginBottom: "65px" }}>
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -564,15 +654,15 @@ const BetAmount = () => {
 
 
                                     <div className="mb-3">
-                                        <CFormLabel htmlFor="prizeAmount">Bet Amount</CFormLabel>
+                                        <CFormLabel htmlFor="BetAmount">Bet Amount</CFormLabel>
                                         <CFormInput
-                                            id="prizeAmount"
+                                            id="BetAmount"
                                             type="text"
-                                            value={missionData.prizeAmount}
-                                            onChange={(e) => handleNumberChange("prizeAmount", e.target.value)}
+                                            value={missionData.BetAmount}
+                                            onChange={(e) => handleNumberChange("BetAmount", e.target.value)}
                                         />
-                                        {errorsupdate.prizeAmount && (
-                                            <p className="text-danger small mt-1">{errorsupdate.prizeAmount}</p>
+                                        {errorsupdate.BetAmount && (
+                                            <p className="text-danger small mt-1">{errorsupdate.BetAmount}</p>
                                         )}
                                     </div>
 
@@ -610,15 +700,15 @@ const BetAmount = () => {
 
 
                                     <div className="mb-3">
-                                        <CFormLabel htmlFor="prizeAmount">Bet Amount</CFormLabel>
+                                        <CFormLabel htmlFor="BetAmount">Bet Amount</CFormLabel>
                                         <CFormInput
-                                            id="prizeAmount"
+                                            id="BetAmount"
                                             type="text"
-                                            value={formData.prizeAmount || ""}
-                                            onChange={(e) => handleInputChangeNumber("prizeAmount", e.target.value)}
+                                            value={formData.BetAmount || ""}
+                                            onChange={(e) => handleInputChangeNumber("BetAmount", e.target.value)}
                                         />
-                                        {errors.prizeAmount && (
-                                            <p className="text-danger small mt-1">{errors.prizeAmount}</p>
+                                        {errors.BetAmount && (
+                                            <p className="text-danger small mt-1">{errors.BetAmount}</p>
                                         )}
 
                                     </div>
