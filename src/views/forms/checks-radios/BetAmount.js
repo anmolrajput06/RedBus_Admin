@@ -62,14 +62,25 @@ const BetAmount = () => {
             }));
         }
 
-        // Restrict to 2 decimal places
+        // if (value === ".") {
+        //     setErrors((prev) => ({
+        //         ...prev,
+        //         [field]: "Invalid number format",
+        //     }));
+        //     setFormData((prev) => ({
+        //         ...prev,
+        //         [field]: "",
+        //     }));
+        //     return;
+        // }
+
+
         if (value.includes(".")) {
             let [integerPart, decimalPart] = value.split(".");
-            decimalPart = decimalPart.slice(0, 2); // Allow only 2 decimal places
+            decimalPart = decimalPart.slice(0, 2);
             value = `${integerPart}.${decimalPart}`;
         }
 
-        // Update state
         setFormData((prev) => ({
             ...prev,
             [field]: value,
@@ -91,6 +102,14 @@ const BetAmount = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
+
+        if (errorsupdate.BetAmount || !missionData.BetAmount) {
+            setErrorsupdate((prev) => ({
+                ...prev,
+                BetAmount: missionData.BetAmount ? errorsupdate.BetAmount : "Bet Amount is required",
+            }));
+            return;
+        }
         setLoading(true);
 
 
@@ -143,6 +162,11 @@ const BetAmount = () => {
 
     const handleAddMissionSubmit = async (e) => {
         e.preventDefault();
+
+        if (errors.BetAmount) {
+            return;
+        }
+
         setLoading(true);
 
         try {
